@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Picnic Sports App</title>
+    
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+      /* --- MOBILE FIRST STYLES --- */
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        background-color: #f3f4f6; margin: 0; color: #333; 
+      }
+      
+      .app-container { display: flex; min-height: 100vh; flex-direction: column; }
+      
+      /* Mobile Sidebar (Top Bar) */
+      .sidebar {
+        background-color: #1e3a8a; color: white;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky; top: 0; z-index: 100;
+      }
+      .sidebar-header { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #3b82f6; }
+      .sidebar-header h2 { margin: 0; font-size: 1.2rem; color: #93c5fd; }
+      .nav-links { list-style: none; padding: 0; margin: 0; display: flex; gap: 10px; overflow-x: auto; }
+      .nav-item {
+        padding: 10px 15px; cursor: pointer; border-radius: 6px; font-weight: 500; 
+        white-space: nowrap; border: 1px solid transparent; transition: all 0.2s;
+      }
+      .nav-item:hover { background-color: #1e40af; }
+      .nav-item.active { background-color: #2563eb; color: white; border-color: #60a5fa; }
+      
+      .main-content { padding: 15px; flex: 1; }
+      
+      /* Cards & Inputs */
+      .card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px; border: 1px solid #e5e7eb; margin-bottom: 20px; }
+      .section-title { font-size: 1.2rem; font-weight: 700; color: #1e3a8a; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap:10px; }
+      
+      .search-bar { display: flex; gap: 8px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+      
+      input[type="text"], select { 
+        padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; 
+        font-size: 16px; /* Prevents zoom on iOS */ 
+        outline: none; width: 100%; background: white; -webkit-appearance: none;
+      }
+      
+      .btn { 
+        padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; 
+        font-size: 14px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;
+      }
+      .btn-primary { background-color: #2563eb; color: white; }
+      .btn-secondary { background-color: #9ca3af; color: white; }
+      .btn-success { background-color: #16a34a; color: white; }
+      .btn-warning { background-color: #d97706; color: white; }
+      .btn-danger { background-color: #dc2626; color: white; }
+      
+      .btn-full { width: 100%; margin-bottom: 5px; }
+
+      .table-wrapper { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 10px; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
+      th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; }
+      td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+      tbody tr { cursor: pointer; }
+      tbody tr:hover { background-color: #eff6ff; }
+
+      #employeeDetails { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 15px; margin-top: 15px; }
+      .detail-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+      .detail-item label { display: block; font-size: 0.8rem; color: #047857; font-weight: 600; margin-bottom: 5px; }
+      .detail-item input { background-color: white; color: #374151; cursor: not-allowed; }
+      
+      .action-row { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #10b981; }
+      .action-row .sport-select { width: 100%; }
+
+      /* Modals */
+      .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center;
+        z-index: 1000; visibility: hidden; opacity: 0; transition: 0.3s;
+      }
+      .modal-overlay.active { visibility: visible; opacity: 1; }
+      
+      .modal {
+        background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-top: 5px solid #2563eb;
+        transform: scale(0.9); transition: transform 0.3s;
+      }
+      .modal-overlay.active .modal { transform: scale(1); }
+      .modal h3 { margin: 0 0 10px 0; color: #1e293b; font-size: 1.2rem; }
+      .modal p { margin: 0 0 15px 0; color: #64748b; line-height: 1.5; }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+      
+      /* Loading Spinner */
+      #loading { text-align: center; padding: 20px; font-weight: bold; color: #1e3a8a; }
+
+      /* Desktop Override */
+      @media (min-width: 768px) {
+        .app-container { flex-direction: row; }
+        .sidebar {
+          width: 250px; height: 100vh; position: fixed; padding: 20px;
+          flex-direction: column;
+        }
+        .sidebar-header { margin-bottom: 40px; }
+        .nav-links { flex-direction: column; width: 100%; overflow-x: hidden; }
+        .nav-item { padding: 15px 20px; width: 100%; border-radius: 8px; }
+        
+        .main-content { margin-left: 250px; padding: 30px; }
+        .detail-grid { grid-template-columns: repeat(2, 1fr); }
+        .action-row { flex-direction: row; justify-content: space-between; }
+        .action-row .sport-select { width: auto; flex-grow: 1; margin-right: 20px; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="app-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>🏃 Picnic Sports</h2>
+        </div>
+        <ul class="nav-links">
+          <li class="nav-item active" id="nav-manpower" onclick="switchSection('manpower')">1. Manpower List</li>
+          <li class="nav-item" id="nav-sports" onclick="switchSection('sports')">2. Sports List</li>
+        </ul>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+        
+        <!-- SECTION 1: MANPOWER -->
+        <div id="view-manpower">
+          <div class="card">
+            <div class="section-title">Manpower Operations</div>
+            <div class="search-bar">
+              <input type="text" id="searchInput" placeholder="Enter ID (e.g. 1001)">
+            </div>
+            <div style="text-align:right; margin-bottom:10px;">
+                <button class="btn btn-primary" onclick="performSearch()">Search</button>
+                <button class="btn btn-secondary" onclick="clearSearch()" style="display:inline-block; margin-left:5px;">Clear</button>
+            </div>
+
+            <div id="fullListContainer">
+              <div class="table-wrapper">
+                <table id="manpowerTable">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Dept</th>
+                      <th>Designation</th>
+                    </tr>
+                  </thead>
+                  <tbody id="manpowerBody">
+                    <tr><td colspan="4" id="loading">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="employeeDetails">
+              <div class="detail-grid">
+                <div class="detail-item"><label>ID</label><input type="text" id="det_id" readonly></div>
+                <div class="detail-item"><label>Name</label><input type="text" id="det_name" readonly></div>
+                <div class="detail-item"><label>Dept</label><input type="text" id="det_dept" readonly></div>
+                <div class="detail-item"><label>Designation</label><input type="text" id="det_desig" readonly></div>
+              </div>
+              <div class="action-row">
+                <div class="sport-select">
+                  <label style="display:block; margin-bottom:5px; font-weight:600; color:#374151;">Select Sport</label>
+                  <select id="det_sport">
+                    <option value="">-- Select Sport --</option>
+                    <option value="Tug Of War">01. Tug Of War (দড়ি টানা)</option>
+                    <option value="Pot Breaking">02. Pot Breaking ( হাড়ি ভাংগা )</option>
+                    <option value="Sack Race">03. Sack Race (বস্তা দৌড় )</option>
+                    <option value="Basket Toss">04. Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+                    <option value="Musical Chair">05. Musical Chair ( মিউজিক্যাল চেয়ার )</option>
+                  </select>
+                </div>
+                <button class="btn btn-success" onclick="submitEntry()">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: SPORTS LIST -->
+        <div id="view-sports" style="display:none;">
+          <div class="card">
+            <div class="section-title">
+              Sports Register
+              <button class="btn btn-primary" onclick="downloadPDF()" style="font-size:12px; padding: 8px 12px;">PDF</button>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+              <label style="font-weight:600; display:block; margin-bottom:5px;">Filter:</label>
+              <select id="sportsFilter">
+                <option value="All">Show All Sports</option>
+                <option value="Tug Of War">01. Tug Of War (দড়ি টানা)</option>
+                <option value="Pot Breaking">02. Pot Breaking ( হাড়ি ভাংগা )</option>
+                <option value="Sack Race">03. Sack Race (বস্তা দৌড় )</option>
+                <option value="Basket Toss">04. Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+                <option value="Musical Chair">05. Musical Chair ( মিউজিক্যাল চেয়ার )</option>
+              </select>
+            </div>
+
+            <div id="sportsContainer"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- PREMIUM MODAL -->
+    <div class="modal-overlay" id="premiumModal">
+      <div class="modal">
+        <h3 id="pm_title">Confirm Action</h3>
+        <p id="pm_message">Are you sure?</p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" id="pm_cancel">No</button>
+          <button class="btn btn-primary" id="pm_confirm">Yes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal">
+        <h3>Change Sports Assignment</h3>
+        <div class="detail-item" style="margin-bottom:10px;">
+          <label>Employee Name</label>
+          <input type="text" id="edit_name" readonly style="background:#f1f5f9;">
+        </div>
+        <div class="detail-item" style="margin-bottom:10px;">
+          <label>Current Sport</label>
+          <input type="text" id="edit_old_sport" readonly style="background:#f1f5f9; font-weight:bold; color:#d97706;">
+        </div>
+        <div class="detail-item" style="margin-bottom:20px;">
+          <label>New Sport</label>
+          <select id="edit_new_sport">
+            <option value="">-- Select New Sport --</option>
+            <option value="Tug Of War">01. Tug Of War (দড়ি টানা)</option>
+            <option value="Pot Breaking">02. Pot Breaking ( হাড়ি ভাংগা )</option>
+            <option value="Sack Race">03. Sack Race (বস্তা দৌড় )</option>
+            <option value="Basket Toss">04. Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+            <option value="Musical Chair">05. Musical Chair ( মিউজিক্যাল চেয়ার )</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveEdit()">Update & Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- CONFIGURATION ---
+      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXu1eBVAnlTnI_k_Pcw9Kox5owglQB7xYTrO5NOwVsj1z84s13Yesohyj7PECs1KSC/exec"; 
+      
+      let manpowerData = [];
+      let assignmentsData = [];
+      let currentSelectedEmployee = null;
+      let editingEntry = null;
+      let currentFilter = "All";
+
+      const sportsList = ["Tug Of War", "Pot Breaking", "Sack Race", "Basket Toss", "Musical Chair"];
+
+      // --- API HELPERS ---
+      async function callBackend(action, payload = null) {
+        const url = payload ? APPS_SCRIPT_URL : `${APPS_SCRIPT_URL}?action=${action}`;
+        try {
+          const response = await fetch(url, {
+            method: payload ? 'POST' : 'GET',
+            mode: 'cors',
+            headers: payload ? { 'Content-Type': 'application/json' } : {},
+            body: payload ? JSON.stringify({ action, payload }) : undefined
+          });
+          const json = await response.json();
+          if (json.status === 'error') throw new Error(json.message);
+          return json.result || json; // Handle both apiResponse and direct array returns
+        } catch (err) {
+          throw err;
+        }
+      }
+
+      // --- UI HELPERS ---
+      function openPremiumModal(title, msg, type, callback) {
+        const modal = document.getElementById('premiumModal');
+        const titleEl = document.getElementById('pm_title');
+        const msgEl = document.getElementById('pm_message');
+        const btn = document.getElementById('pm_confirm');
+
+        titleEl.innerText = title;
+        msgEl.innerHTML = msg; // FIX: Changed innerText to innerHTML for bold/br tags
+        
+        modal.classList.remove('warning', 'error');
+
+        if (type === 'warning') {
+          modal.classList.add('warning');
+          btn.innerText = "OK";
+          btn.className = "btn btn-warning";
+          callback = null; 
+        } else if (type === 'error') {
+          modal.classList.add('error');
+          btn.innerText = "OK";
+          btn.className = "btn btn-danger";
+          callback = null;
+        } else {
+          btn.innerText = "Yes";
+          btn.className = "btn btn-primary";
+        }
+        
+        // Attach event once
+        const confirmBtn = document.getElementById('pm_confirm');
+        const cancelBtn = document.getElementById('pm_cancel');
+        
+        const close = () => {
+            modal.classList.remove('active');
+            if(callback) { callback(); }
+            // Clean up listeners to prevent stacking
+            confirmBtn.removeEventListener('click', close);
+            cancelBtn.removeEventListener('click', simpleClose);
+        };
+
+        const simpleClose = () => { modal.classList.remove('active'); };
+
+        confirmBtn.onclick = close;
+        cancelBtn.onclick = simpleClose;
+
+        modal.classList.add('active');
+      }
+
+      function switchSection(id) {
+        document.getElementById('view-manpower').style.display = id === 'manpower' ? 'block' : 'none';
+        document.getElementById('view-sports').style.display = id === 'sports' ? 'block' : 'none';
+        document.getElementById('nav-manpower').classList.toggle('active', id === 'manpower');
+        document.getElementById('nav-sports').classList.toggle('active', id === 'sports');
+        if(id === 'sports') renderSportsList();
+      }
+
+      // --- INIT ---
+      window.onload = async function() {
+        try {
+          manpowerData = await callBackend('getManpower');
+          renderFullList(manpowerData);
+        } catch(e) { document.getElementById('loading').innerHTML = `<span style="color:red">Load Error: ${e.message}</span>`; }
+        
+        try {
+          assignmentsData = await callBackend('getAssignments');
+          renderSportsList();
+        } catch(e) { console.error(e); }
+      };
+
+      // --- MANPOWER LOGIC ---
+      function renderFullList(data) {
+        const tbody = document.getElementById('manpowerBody');
+        tbody.innerHTML = '';
+        data.forEach(emp => {
+          const tr = document.createElement('tr');
+          tr.onclick = () => { document.getElementById('searchInput').value = emp.id; performSearch(); };
+          tr.innerHTML = `<td>${emp.id}</td><td>${emp.name}</td><td>${emp.dept}</td><td>${emp.desig}</td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function performSearch() {
+        const id = document.getElementById('searchInput').value.trim();
+        const emp = manpowerData.find(e => e.id === id);
+        if (emp) {
+          document.getElementById('fullListContainer').style.display = 'none';
+          document.getElementById('employeeDetails').style.display = 'block';
+          currentSelectedEmployee = emp;
+          document.getElementById('det_id').value = emp.id;
+          document.getElementById('det_name').value = emp.name;
+          document.getElementById('det_dept').value = emp.dept;
+          document.getElementById('det_desig').value = emp.desig;
+          document.getElementById('det_sport').value = "";
+        } else {
+          alert("Employee ID not found!");
+        }
+      }
+
+      function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('employeeDetails').style.display = 'none';
+        document.getElementById('fullListContainer').style.display = 'block';
+        currentSelectedEmployee = null;
+      }
+
+      async function submitEntry() {
+        const sport = document.getElementById('det_sport').value;
+        if(!sport) { openPremiumModal("Missing Info", "Please select a sport.", "error"); return; }
+
+        const existing = assignmentsData.find(e => e.id === currentSelectedEmployee.id);
+        let msg = `Do you want to add ${currentSelectedEmployee.name} to ${sport}?`;
+        if (existing && existing.sport !== sport) {
+           msg = `${currentSelectedEmployee.name} is currently in <b>${existing.sport}</b>.<br>Move them to <b>${sport}</b>?`;
+        }
+
+        openPremiumModal("Confirm", msg, "info", async () => {
+          try {
+            const res = await callBackend('saveParticipant', {
+              id: currentSelectedEmployee.id,
+              name: currentSelectedEmployee.name,
+              dept: currentSelectedEmployee.dept,
+              desig: currentSelectedEmployee.desig,
+              sport: sport
+            });
+            
+            assignmentsData = await callBackend('getAssignments');
+            renderSportsList();
+            
+            let successMsg = "Emp Add Successful";
+            if(res === "Moved") successMsg = "Sports Changed Successfully!";
+            openPremiumModal("Success", successMsg, "success");
+            clearSearch();
+          } catch(e) { openPremiumModal("Error", e.message, "error"); }
+        });
+      }
+
+      // --- SPORTS LIST ---
+      function renderSportsList() {
+        const container = document.getElementById('sportsContainer');
+        container.innerHTML = '';
+        const sportsToRender = currentFilter === "All" ? sportsList : [currentFilter];
+
+        sportsToRender.forEach(sport => {
+          const list = assignmentsData.filter(a => a.sport === sport);
+          if (currentFilter !== "All" || list.length > 0) {
+            const label = document.querySelector(`#det_sport option[value="${sport}"]`).text;
+            const section = document.createElement('div');
+            section.style.marginBottom = "20px";
+            
+            let html = `
+              <div style="background:#2563eb; color:white; padding:10px; font-weight:bold; border-radius:8px 8px 0 0;">${label} (${list.length})</div>
+              <div class="table-wrapper" style="border-top:none; border-radius: 0 0 8px 8px;">
+                <table>
+                  <thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>Desig</th><th style="text-align:right; width:140px;">Action</th></tr></thead>
+                  <tbody>
+                    ${list.map(p => `
+                      <tr>
+                        <td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${p.desig}</td>
+                        <td style="text-align:right;">
+                          <button class="btn btn-warning" style="padding:5px 10px; font-size:12px; margin-right:5px;" onclick="openEdit('${p.timestamp}')">Edit</button>
+                          <button class="btn btn-danger" style="padding:5px 10px; font-size:12px;" onclick="deleteEntry('${p.timestamp}')">Delete</button>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `;
+            if(list.length === 0) html = `<div style="background:#e2e8f0; color:#64748b; padding:20px; border-radius:8px; text-align:center;">No participants for <strong>${label}</strong>.</div>`;
+            section.innerHTML = html;
+            container.appendChild(section);
+          }
+        });
+      }
+      
+      document.getElementById('sportsFilter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        renderSportsList();
+      });
+
+      // --- EDIT & DELETE ---
+      function openEdit(ts) {
+        editingEntry = assignmentsData.find(e => e.timestamp === ts);
+        if(!editingEntry) return;
+        document.getElementById('edit_name').value = editingEntry.name;
+        document.getElementById('edit_old_sport').value = editingEntry.sport;
+        document.getElementById('edit_new_sport').value = "";
+        document.getElementById('editModal').classList.add('active');
+      }
+      function closeEditModal() { document.getElementById('editModal').classList.remove('active'); editingEntry = null; }
+
+      async function saveEdit() {
+        const newSport = document.getElementById('edit_new_sport').value;
+        if(!newSport) { openPremiumModal("Missing Info", "Select new sport", "error"); return; }
+        if(newSport === editingEntry.sport) { openPremiumModal("Warning", "Select different sport", "warning"); return; }
+
+        if (assignmentsData.some(e => e.id === editingEntry.id && e.sport === newSport && e.timestamp !== editingEntry.timestamp)) {
+           openPremiumModal("Warning", "Player already in this Sports", "warning"); return;
+        }
+
+        try {
+          await callBackend('updateParticipant', { entry: { ...editingEntry, sport: newSport }, oldTimestamp: editingEntry.timestamp });
+          assignmentsData = await callBackend('getAssignments');
+          renderSportsList();
+          openPremiumModal("Success", "Sports Changed Successfully!", "success");
+          closeEditModal();
+        } catch(e) { openPremiumModal("Error", e.message, "error"); }
+      }
+
+      async function deleteEntry(ts) {
+        openPremiumModal("Delete", "Delete this entry?", "info", async () => {
+          try {
+            await callBackend('deleteParticipant', { timestamp: ts });
+            assignmentsData = assignmentsData.filter(e => e.timestamp !== ts);
+            renderSportsList();
+            openPremiumModal("Deleted", "Entry Deleted Successfully", "success");
+          } catch(e) { openPremiumModal("Error", e.message, "error"); }
+        });
+      }
+
+      // --- PDF ---
+      async function downloadPDF() {
+        if(assignmentsData.length === 0) { alert("No data"); return; }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(18);
+        doc.text("Picnic Sports List", 14, 20);
+        let y = 40;
+        
+        (currentFilter === "All" ? sportsList : [currentFilter]).forEach(sport => {
+          const list = assignmentsData.filter(a => a.sport === sport);
+          if(list.length > 0) {
+            if(y > 240) { doc.addPage(); y = 20; }
+            const label = document.querySelector(`#det_sport option[value="${sport}"]`).text;
+            doc.setFont("helvetica", "bold").text(`${label} - Total: ${list.length}`, 14, y);
+            y += 10;
+            doc.autoTable({
+              startY: y, head: [['ID', 'Name', 'Department', 'Designation']],
+              body: list.map(p => [p.id, p.name, p.dept, p.desig]),
+              theme: 'grid', headStyles: { fillColor: [37, 99, 235] }, styles: { fontSize: 10 }
+            });
+            y = doc.lastAutoTable.finalY + 15;
+          }
+        });
+        doc.save('Sports_List.pdf');
+      }
+    </script>
+  </body>
+</html>
