@@ -5,177 +5,224 @@
 <title>RR IMPERIAL ELECTRICALS LTD.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- jsPDF -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#f4f6f8}
-header{background:#0a3d62;color:#fff;padding:12px;text-align:center;font-size:18px;font-weight:bold}
-.container{display:flex}
-.sidebar{width:90px;background:#1e3799;color:#fff;min-height:100vh}
-.sidebar button{width:100%;padding:15px;border:none;background:none;color:#fff;font-size:12px}
-.sidebar button.active{background:#4a69bd}
-.main{flex:1;padding:10px}
+*{box-sizing:border-box;font-family:Poppins}
+body{margin:0;background:#f4f6fa}
 
-.card{background:#fff;padding:10px;border-radius:8px;margin-bottom:10px}
-input,select,button{width:100%;padding:8px;margin-top:6px}
-button{background:#1e3799;color:#fff;border:none;border-radius:6px}
-button.danger{background:#e55039}
-button.gray{background:#7f8c8d}
-.summary{display:flex;gap:6px}
-.box{flex:1;background:#dff9fb;padding:6px;border-radius:6px;text-align:center;font-size:12px}
+/* Sidebar */
+.sidebar{
+  width:230px; background:#1e3c8a; color:#fff;
+  position:fixed; top:0; left:0; bottom:0; padding:20px;
+}
+.sidebar h2{margin:0 0 20px;font-size:20px}
+.sidebar button{
+  width:100%; padding:12px; margin-bottom:10px;
+  border:none;border-radius:8px;
+  background:#2e5ae8;color:#fff;font-size:14px;
+}
+.sidebar button.active{background:#0d2ea6}
 
-table{width:100%;border-collapse:collapse;font-size:11px}
-th,td{border:1px solid #ccc;padding:4px;text-align:center}
+/* Main */
+.main{margin-left:230px;padding:20px}
 
+/* Header */
+.header{
+  background:#fff;padding:20px;border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+.header h1{text-align:center;color:#c0392b;margin:0}
+.badge{display:inline-block;margin-top:10px;padding:6px 12px;border:1px dashed red;color:red}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px}
+.card{
+  background:#fff;padding:20px;border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+.card h3{margin:0;font-size:14px;color:#555}
+.card p{font-size:34px;margin:10px 0;color:#1e3c8a}
+
+/* Tabs */
+.tabs{margin-top:20px}
+.tabs button{
+  padding:10px 18px;border:none;border-radius:8px;
+  margin-right:10px;background:#e1e6f0
+}
+.tabs button.active{background:#1e3c8a;color:#fff}
+
+/* Form */
+.box{background:#fff;padding:20px;margin-top:15px;border-radius:12px}
+input,select{
+  width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc
+}
+.action-btn{margin-top:10px;padding:10px;border:none;border-radius:8px;background:#1e3c8a;color:#fff}
+
+/* Sports Cards */
+.sports-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.sport-box{text-align:center;padding:20px;border-radius:12px;border:1px solid #e0e0e0}
+.circle{width:60px;height:60px;border-radius:50%;border:4px solid #dfe6e9;
+margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:20px}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
+
+/* Modal */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)}
-.modal-content{background:#fff;margin:15% auto;padding:15px;width:90%;border-radius:8px}
+.modal-content{
+  background:#fff;padding:20px;border-radius:12px;
+  width:90%;max-width:400px;margin:10% auto
+}
 </style>
 </head>
 
 <body>
 
-<header>RR IMPERIAL ELECTRICALS LTD.</header>
+<div class="sidebar">
+  <h2>🏃 Picnic Sports</h2>
+  <button class="active" onclick="show('manpower')">1. Manpower List</button>
+  <button onclick="show('sports')">2. Sports Register</button>
+</div>
 
-<div class="container">
-  <div class="sidebar">
-    <button onclick="showTab('manpower')" class="active">Manpower</button>
-    <button onclick="showTab('sports')">Sports Register</button>
+<div class="main">
+
+  <div class="header">
+    <h1>RR IMPERIAL ELECTRICALS LTD.</h1>
+    <div class="badge">HAPPY PICNIC DAY!</div>
   </div>
 
-  <div class="main">
-
-    <!-- MANPOWER -->
-    <div id="manpower">
-      <div class="summary">
-        <div class="box">Total<br><b id="totalMp"></b></div>
-        <div class="box">Participate<br><b id="totalJoin"></b></div>
-        <div class="box">Left<br><b id="leftMp"></b></div>
-      </div>
-
-      <div class="card">
-        <b>Individual Registration</b>
-        <input id="searchId" placeholder="Employee ID">
-        <button onclick="searchEmp()">Search</button>
-        <button class="gray" onclick="clearSearch()">Clear</button>
-      </div>
+  <!-- MANPOWER -->
+  <div id="manpower">
+    <div class="cards">
+      <div class="card"><h3>TOTAL MANPOWER</h3><p id="tm"></p></div>
+      <div class="card"><h3>PARTICIPATE TOTAL</h3><p id="pt"></p></div>
+      <div class="card"><h3>LEFT</h3><p id="lf"></p></div>
     </div>
 
-    <!-- SPORTS REGISTER -->
-    <div id="sports" style="display:none">
-      <div class="card">
-        <b>Overview Summary</b>
-        <div id="overview"></div>
-      </div>
-
-      <div class="card">
-        <button onclick="downloadPDF()">Download PDF</button>
-        <div id="sportList"></div>
-      </div>
+    <div class="tabs">
+      <button class="active">Individual Registration</button>
+      <button>Department Bulk Registration</button>
     </div>
 
+    <div class="box">
+      <input id="eid" placeholder="Enter Employee ID">
+      <button class="action-btn" onclick="searchEmp()">Search</button>
+    </div>
   </div>
+
+  <!-- SPORTS -->
+  <div id="sports" style="display:none">
+    <div class="box">
+      <button class="action-btn" onclick="downloadPDF()">Download PDF</button>
+      <button class="action-btn" style="background:#c0392b" onclick="clearAll()">Bulk Delete</button>
+    </div>
+
+    <div class="sports-cards" id="sportSummary"></div>
+    <div id="sportTable"></div>
+  </div>
+
 </div>
 
 <!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-content">
     <div id="empInfo"></div>
-    <select id="sportSel">
-      <option value="">Select Sports</option>
+    <select id="sport">
+      <option value="">Select Sport</option>
       <option>Tug Of War (দড়ি টানা)</option>
       <option>Pot Breaking (হাড়ি ভাংগা)</option>
       <option>Sack Race (বস্তা দৌড়)</option>
       <option>Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
       <option>Musical Chair (মিউজিক্যাল চেয়ার)</option>
     </select>
-    <button onclick="register()">Done</button>
-    <button class="danger" onclick="closeModal()">Cancel</button>
+    <button class="action-btn" onclick="register()">Done</button>
+    <button class="action-btn" style="background:#7f8c8d" onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
 <script>
+// ===== AUTO INJECT MANPOWER (Demo sample, full list can be injected same way) =====
 const manpower = [
-  {id:"20110",name:"Krishibid Sadeque ibn Shams",dept:"Administration",des:"Chief Co-Ordinator"},
-  {id:"20103",name:"Mohammad Sharif Ahmed",dept:"Operation",des:"Factory Manager"},
-  {id:"20801",name:"Subhasis Bakul Chandra Ghosh",dept:"Maintenance",des:"Manager"},
-  {id:"20107",name:"Md. Mostafizur Rahman",dept:"Accounts",des:"Dpt. Manager"},
-  {id:"20112",name:"Mohammad Forkan",dept:"Accounts",des:"Executive"},
-  // ⚠️ demo রাখা হয়েছে, চাইলে পুরো লিস্ট আমি Auto Inject করে দিতে পারি
+ {id:"20110",name:"Krishibid Sadeque ibn Shams",dept:"Administration",des:"Chief Co-Ordinator"},
+ {id:"20103",name:"Mohammad Sharif Ahmed",dept:"Operation",des:"Factory Manager"},
+ {id:"20801",name:"Subhasis Bakul Chandra Ghosh",dept:"Maintenance",des:"Manager"},
 ];
 
-let selectedEmp=null;
-let reg=JSON.parse(localStorage.getItem("sportsReg")||"[]");
+// ===== DATA =====
+let reg = JSON.parse(localStorage.getItem("sportsReg")||"[]");
+let selected=null;
 
-function showTab(t){
-  manpowerTab=document.getElementById("manpower");
-  sportsTab=document.getElementById("sports");
-  manpowerTab.style.display=t=="manpower"?"block":"none";
-  sportsTab.style.display=t=="sports"?"block":"none";
+// ===== FUNCTIONS =====
+function show(id){
+ document.getElementById("manpower").style.display=id=="manpower"?"block":"none";
+ document.getElementById("sports").style.display=id=="sports"?"block":"none";
 }
-
 function refresh(){
-  totalMp.innerText=manpower.length;
-  totalJoin.innerText=reg.length;
-  leftMp.innerText=manpower.length-reg.length;
+ tm.innerText=manpower.length;
+ pt.innerText=reg.length;
+ lf.innerText=manpower.length-reg.length;
 
-  let ov={};
-  reg.forEach(r=>ov[r.sport]=(ov[r.sport]||0)+1);
-  overview.innerHTML="";
-  for(let k in ov) overview.innerHTML+=`<div class="box">${k}<br><b>${ov[k]}</b></div>`;
+ let sports=["Tug Of War (দড়ি টানা)","Pot Breaking (হাড়ি ভাংগা)","Sack Race (বস্তা দৌড়)","Basket Toss (ঝুড়িতে বল নিক্ষেপ)","Musical Chair (মিউজিক্যাল চেয়ার)"];
+ sportSummary.innerHTML="";
+ sports.forEach(s=>{
+   let c=reg.filter(r=>r.sport==s).length;
+   sportSummary.innerHTML+=`<div class="sport-box"><b>${s}</b><div class="circle">${c}</div></div>`;
+ });
 
-  sportList.innerHTML="";
-  reg.forEach((r,i)=>{
-    sportList.innerHTML+=`
-    <table>
-      <tr><th>${r.sport}</th></tr>
-      <tr><td>${r.id} - ${r.name}</td></tr>
-      <tr>
-        <td>
-          <button onclick="del(${i})" class="danger">Delete</button>
-        </td>
-      </tr>
-    </table><br>`;
-  });
+ let html="<table><tr><th>ID</th><th>Name</th><th>Dept</th><th>Sport</th><th>Action</th></tr>";
+ reg.forEach((r,i)=>{
+  html+=`<tr><td>${r.id}</td><td>${r.name}</td><td>${r.dept}</td><td>${r.sport}</td>
+  <td><button onclick="del(${i})">Delete</button></td></tr>`;
+ });
+ html+="</table>";
+ sportTable.innerHTML=html;
 }
 
 function searchEmp(){
-  let id=searchId.value;
-  selectedEmp=manpower.find(e=>e.id==id);
-  if(!selectedEmp){alert("Not Found");return;}
-  empInfo.innerHTML=`<b>${selectedEmp.name}</b><br>${selectedEmp.dept}<br>${selectedEmp.des}`;
-  modal.style.display="block";
+ let id=eid.value;
+ selected=manpower.find(e=>e.id==id);
+ if(!selected){alert("Not Found");return}
+ empInfo.innerHTML=`<b>${selected.name}</b><br>${selected.dept}<br>${selected.des}`;
+ modal.style.display="block";
 }
 
 function register(){
-  let sport=sportSel.value;
-  if(!sport){alert("Select sport");return;}
-  if(reg.find(r=>r.id==selectedEmp.id)){alert("Already Registered");return;}
-  reg.push({...selectedEmp,sport});
-  localStorage.setItem("sportsReg",JSON.stringify(reg));
-  closeModal();refresh();alert("Registration Successful");
+ if(reg.find(r=>r.id==selected.id)){alert("Already Registered");return}
+ let sp=sport.value;if(!sp){alert("Select sport");return}
+ reg.push({...selected,sport:sp});
+ localStorage.setItem("sportsReg",JSON.stringify(reg));
+ closeModal();refresh();
 }
 
 function del(i){
-  if(confirm("Delete?")){
-    reg.splice(i,1);
-    localStorage.setItem("sportsReg",JSON.stringify(reg));
-    refresh();
-  }
+ if(confirm("Delete?")){
+  reg.splice(i,1);
+  localStorage.setItem("sportsReg",JSON.stringify(reg));
+  refresh();
+ }
+}
+
+function clearAll(){
+ if(confirm("Delete All?")){
+  reg=[];
+  localStorage.removeItem("sportsReg");
+  refresh();
+ }
 }
 
 function closeModal(){modal.style.display="none"}
-function clearSearch(){searchId.value=""}
 
 function downloadPDF(){
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF();
-  let y=10;
-  reg.forEach(r=>{
-    pdf.text(`${r.sport} - ${r.id} ${r.name}`,10,y);
-    y+=8;
-  });
-  pdf.save("Sports_List.pdf");
+ const {jsPDF}=window.jspdf;
+ const pdf=new jsPDF();
+ let y=10;
+ reg.forEach(r=>{
+  pdf.text(`${r.id} ${r.name} - ${r.sport}`,10,y);y+=8;
+ });
+ pdf.save("Sports_List.pdf");
 }
 
 refresh();
