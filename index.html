@@ -1,689 +1,1136 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>RR IMPERIAL ELECTRICALS LTD.</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RR IMPERIAL ELECTRICALS LTD.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
-<style>
-*{box-sizing:border-box;font-family:Poppins}
-body{margin:0;background:#f4f6fa}
+    <!-- Bangla Font Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-/* Sidebar */
-.sidebar{
-  width:220px;background:#1e3c8a;color:#fff;
-  position:fixed;top:0;left:0;bottom:0;padding:20px
-}
-.sidebar h2{margin:0 0 20px}
-.sidebar button{
-  width:100%;padding:12px;margin-bottom:10px;
-  border:none;border-radius:8px;background:#2e5ae8;color:#fff
-}
-.sidebar button.active{background:#0d2ea6}
+    <style>
+      /* --- CORE STYLES --- */
+      * { box-sizing: border-box; }
+      body { 
+        font-family: 'Hind Siliguri', 'Roboto', sans-serif; /* Bangla Support */
+        background-color: #f3f4f6; margin: 0; color: #333; 
+      }
+      
+      .app-container { display: flex; min-height: 100vh; }
+      
+      /* --- SIDEBAR --- */
+      .sidebar {
+        width: 250px;
+        background-color: #1e3a8a; color: white;
+        display: flex; flex-direction: column; padding: 20px;
+        position: fixed; height: 100%; top: 0; left: 0;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        z-index: 50;
+        transition: transform 0.3s ease;
+      }
+      .sidebar-header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #3b82f6; }
+      .sidebar-header h2 { margin: 0; font-size: 1.2rem; color: #93c5fd; }
+      
+      .nav-links { list-style: none; padding: 0; margin: 0; }
+      .nav-item {
+        padding: 15px 20px; cursor: pointer; border-radius: 8px; margin-bottom: 10px;
+        transition: background 0.2s; font-weight: 500; display: flex; align-items: center;
+      }
+      .nav-item:hover { background-color: #1e40af; }
+      .nav-item.active { background-color: #2563eb; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+      
+      /* --- MOBILE MENU BUTTON --- */
+      .mobile-menu-btn {
+        display: none; position: fixed; top: 15px; right: 15px; z-index: 2000;
+        background: #1e3a8a; color: white; border: none; padding: 12px;
+        border-radius: 50%; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      }
 
-/* Main */
-.main{margin-left:220px;padding:20px}
-.header{
-  background:#fff;padding:20px;border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08)
-}
-.header h1{text-align:center;color:#c0392b;margin:0}
+      /* --- MAIN CONTENT --- */
+      .main-content { flex: 1; margin-left: 250px; padding: 20px; transition: margin-left 0.3s; }
+      
+      .section-view { display: none; animation: fadeIn 0.3s ease-in-out; }
+      .section-view.active { display: block; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px}
-.card{
-  background:#fff;padding:20px;border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08)
-}
-.card h3{margin:0;font-size:14px}
-.card p{font-size:30px;margin:10px 0;color:#1e3c8a}
+      .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); padding: 20px; border: 1px solid #e5e7eb; }
+      
+      /* --- MODE TOGGLER --- */
+      .mode-switch {
+        display: flex; background: #e2e8f0; border-radius: 8px; padding: 4px; margin-bottom: 20px; width: fit-content;
+      }
+      .mode-btn {
+        padding: 10px 25px; border: none; border-radius: 6px; background: transparent; color: #64748b; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Hind Siliguri', sans-serif;
+      }
+      .mode-btn.active { background: white; color: #2563eb; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-/* Box */
-.box{background:#fff;padding:20px;border-radius:12px;margin-top:15px}
-input,select{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc}
-button.action{margin-top:10px;padding:10px;border:none;border-radius:8px;background:#1e3c8a;color:#fff}
+      /* --- COMPANY HEADER STYLE --- */
+      .company-header {
+        text-align: center; font-size: 1.5rem; font-weight: 800; color: #b91c1c; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #fecaca; padding-bottom: 15px;
+      }
 
-/* Table */
-table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{border:1px solid #ddd;padding:6px;font-size:12px;text-align:center}
+      /* --- COUNTDOWN STYLE --- */
+      .countdown-badge {
+        display: block; margin: 0 auto 20px auto; padding: 6px 12px; border: 1px dashed #b91c1c; color: #b91c1c; font-weight: 600; font-size: 0.9rem; background: #fff1f2; border-radius: 4px; text-align: center; width: fit-content;
+      }
 
-/* Modal */
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)}
-.modal-content{
-  background:#fff;padding:20px;border-radius:12px;
-  width:90%;max-width:400px;margin:10% auto
-}
-</style>
-</head>
+      /* --- STATS BOXES STYLE --- */
+      .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+      .stat-box {
+        background: white; border: 1px solid #e2e8f0; border-left: 5px solid #1e40af; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.2s;
+      }
+      .stat-box:hover { transform: translateY(-3px); }
+      .stat-label { display: block; font-size: 0.9rem; color: #475569; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .stat-value { display: block; font-size: 2rem; font-weight: 800; color: #1e40af; line-height: 1; }
 
-<body>
+      /* --- ACTION BAR --- */
+      .action-bar { display: flex; gap: 15px; justify-content: center; align-items: center; margin-bottom: 25px; flex-wrap: wrap; }
+      .btn-large-pdf {
+        background-color: #b91c1c; color: white; font-size: 1rem; font-weight: 700; padding: 12px 25px; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: inline-flex; align-items: center; gap: 8px;
+      }
+      .btn-large-pdf:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(185, 28, 28, 0.4); background-color: #991b1b; }
+      
+      .btn-bulk-delete {
+        background-color: white; color: #dc2626; font-size: 1rem; font-weight: 700; padding: 12px 25px; border-radius: 50px; border: 2px solid #dc2626; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+      }
+      .btn-bulk-delete:hover { background-color: #dc2626; color: white; box-shadow: 0 6px 10px rgba(220, 38, 38, 0.2); }
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <h2>🏃 Picnic Sports</h2>
-  <button class="active" onclick="showTab('manpower')">Manpower</button>
-  <button onclick="showTab('sports')">Sports Register</button>
-</div>
+      /* --- BULK REGISTRATION STYLE --- */
+      .bulk-controls { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+      .bulk-group { flex: 1; min-width: 140px; }
+      .bulk-group label { display:block; margin-bottom:5px; font-weight:600; color:#475569; font-size: 0.85rem; }
 
-<!-- MAIN -->
-<div class="main">
+      .checkbox-cell { text-align: center; width: 30px; }
+      .status-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: #e2e8f0; color: #64748b; }
+      .status-badge.already { background: #dcfce7; color: #166534; }
 
-  <div class="header">
-    <h1>RR IMPERIAL ELECTRICALS LTD.</h1>
-  </div>
+      /* --- SPORTS DASHBOARD BOXES STYLE --- */
+      .section-subtitle { font-size: 1rem; font-weight: 700; color: #475569; margin: 20px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+      .section-subtitle span { background: #e2e8f0; color: #1e293b; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; }
+      .sports-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+      .sport-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s; cursor: default; }
+      .sport-card:hover { border-color: #2563eb; transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+      .sport-title { font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 10px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+      .sport-badge-count { background: #eff6ff; color: #1d4ed8; border-radius: 50%; width: 50px; height: 50px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; border: 2px solid #bfdbfe; }
+      .sport-badge-count.zero { background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
 
-  <!-- MANPOWER TAB -->
-  <div id="manpowerTab">
+      /* --- TABLE STYLE --- */
+      .search-bar { display: flex; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+      input[type="text"], select { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; width: 100%; font-family: 'Hind Siliguri', sans-serif; }
+      .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; white-space: nowrap; font-family: 'Hind Siliguri', sans-serif;}
+      .btn-primary { background-color: #2563eb; color: white; }
+      .btn-primary:hover { background-color: #1d4ed8; }
+      .btn-secondary { background-color: #9ca3af; color: white; }
+      .btn-success { background-color: #16a34a; color: white; }
+      .btn-warning { background-color: #d97706; color: white; }
+      .btn-danger { background-color: #dc2626; color: white; }
+      .btn-sm { padding: 4px 8px; font-size: 12px; margin-left: 5px; }
 
-    <div class="cards">
-      <div class="card"><h3>Total Manpower</h3><p id="totalMp">0</p></div>
-      <div class="card"><h3>Participate</h3><p id="totalReg">0</p></div>
-      <div class="card"><h3>Left</h3><p id="leftMp">0</p></div>
+      .table-wrapper { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th { background-color: #f1f5f9; color: #475569; font-weight: 600; text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; }
+      td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+      tbody tr { cursor: pointer; }
+      tbody tr:hover { background-color: #eff6ff; }
+
+      #employeeDetails { display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 20px; margin-top: 15px; }
+      .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; }
+      .detail-item label { display: block; font-size: 0.8rem; color: #047857; font-weight: 600; margin-bottom: 5px; }
+      .detail-item input { background-color: white; color: #374151; cursor: not-allowed; font-size: 13px; padding: 8px; }
+      .action-row { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #10b981; }
+      .action-row .sport-select { flex-grow: 1; margin-right: 15px; }
+      .action-row select { width: 100%; }
+
+      .filter-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e5e7eb; }
+      .filter-select { width: 100%; max-width: 250px; }
+
+      /* --- MODAL & ANIMATION --- */
+      .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; visibility: hidden; opacity: 0; transition: 0.3s; }
+      .modal-overlay.active { visibility: visible; opacity: 1; }
+      .modal { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border-top: 5px solid #2563eb; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+      .modal-overlay.active .modal { transform: scale(1); }
+      .modal h3 { margin: 0 0 10px 0; color: #1e293b; font-size: 1.1rem; }
+      .modal p { margin: 0 0 15px 0; color: #64748b; line-height: 1.4; }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+      
+      #sportAnimOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 2000; visibility: hidden; opacity: 0; transition: 0.3s; }
+      #sportAnimOverlay.active { visibility: visible; opacity: 1; }
+      .anim-container { width: 150px; height: 150px; position: relative; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 50px rgba(255,255,255,0.5); }
+      .anim-text { position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-size: 1.2rem; font-weight: bold; text-transform: uppercase; animation: popIn 0.5s ease-out; }
+      
+      @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+      .spinner { border: 4px solid rgba(255,255,255,0.3); border-radius: 50%; border-top: 4px solid #fff; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px auto; }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 768px) {
+        .sidebar { transform: translateX(-100%); width: 260px; }
+        .sidebar.open { transform: translateX(0); }
+        .main-content { margin-left: 0; padding: 15px; }
+        .mobile-menu-btn { display: block; }
+        .stats-grid { grid-template-columns: 1fr; }
+        .btn-large-pdf, .btn-bulk-delete { width: 100%; justify-content: center; font-size: 0.9rem; }
+        .mode-switch { width: 100%; }
+        .mode-btn { flex: 1; text-align: center; font-size: 0.9rem; }
+        .bulk-controls { flex-direction: column; }
+        .bulk-group { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="app-container">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>🏃 Picnic Sports</h2>
+        </div>
+        <ul class="nav-links">
+          <li class="nav-item active" id="nav-manpower" onclick="switchSection('manpower')">1. Manpower List</li>
+          <li class="nav-item" id="nav-sports" onclick="switchSection('sports')">2. Sports Register</li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <!-- SECTION 1: MANPOWER LIST -->
+        <div id="view-manpower" class="section-view active">
+          <div class="card">
+            <div class="company-header">RR IMPERIAL ELECTRICALS LTD.</div>
+            
+            <!-- Header Countdown -->
+            <div class="countdown-badge" id="countdownTimer">Loading...</div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+              <div class="stat-box"><span class="stat-label">Total Manpower</span><span class="stat-value" id="tm">0</span></div>
+              <div class="stat-box"><span class="stat-label">Participate Total</span><span class="stat-value" id="pt">0</span></div>
+              <div class="stat-box"><span class="stat-label">Left</span><span class="stat-value" id="lf">0</span></div>
+            </div>
+
+            <!-- Mode Switcher -->
+            <div class="mode-switch">
+              <button class="mode-btn active" id="btnInd" onclick="setMode('ind')">Individual</button>
+              <button class="mode-btn" id="btnBulk" onclick="setMode('bulk')">Department Bulk</button>
+            </div>
+
+            <!-- INDIVIDUAL MODE -->
+            <div id="viewInd">
+              <div class="search-bar">
+                <select id="empSearch" onchange="onSearchChange()">
+                  <option value="">-- Select Employee ID --</option>
+                </select>
+                <button class="btn btn-primary" onclick="confirmSearch()">Search</button>
+                <button class="btn btn-secondary" onclick="resetSearch()">Clear</button>
+              </div>
+
+              <div id="empDisplay" style="background:#fff1f2; padding:15px; border-radius:8px; margin-bottom:15px; display:none;">
+                  <div id="empInfo"></div>
+                  <div style="margin-top:15px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:600; color:#374151;">Select Sport:</label>
+                    <select id="regSport" style="margin-bottom:10px;">
+                      <option value="">-- Select Sport --</option>
+                      <option value="Tug Of War">01. Tug Of War (দড়ি টানা)</option>
+                      <option value="Pot Breaking">02. Pot Breaking (হাড়ি ভাংগা)</option>
+                      <option value="Sack Race">03. Sack Race (বস্তা দৌড়)</option>
+                      <option value="Basket Toss">04. Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+                      <option value="Musical Chair">05. Musical Chair (মিউজিক্যাল চেয়ার)</option>
+                    </select>
+                    <button class="btn btn-success" style="width:100%;" onclick="submitIndividual()">Register</button>
+                  </div>
+              </div>
+            </div>
+
+            <!-- BULK MODE -->
+            <div id="viewBulk" style="display:none;">
+              <div class="bulk-controls">
+                <div class="bulk-group">
+                  <label>Department:</label>
+                  <select id="bulkDept" onchange="renderBulk()">
+                    <option value="">-- Select Department --</option>
+                  </select>
+                </div>
+                <div class="bulk-group" style="flex:2;">
+                  <label>Sport for All:</label>
+                  <select id="bulkSport">
+                    <option value="">-- Select Sport --</option>
+                    <option value="Tug Of War">01. Tug Of War (দড়ি টানা)</option>
+                    <option value="Pot Breaking">02. Pot Breaking (হাড়ি ভাংগা)</option>
+                    <option value="Sack Race">03. Sack Race (বস্তা দৌড়)</option>
+                    <option value="Basket Toss">04. Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+                    <option value="Musical Chair">05. Musical Chair (মিউজিক্যাল চেয়ার)</option>
+                  </select>
+                </div>
+                <div class="bulk-group" style="flex:0; min-width:120px;">
+                  <label>&nbsp;</label>
+                  <button class="btn btn-primary" onclick="submitBulk()">Register</button>
+                </div>
+              </div>
+              
+              <div class="table-wrapper">
+                  <table>
+                    <thead>
+                        <tr><th class="checkbox-cell"><input type="checkbox" id="bulkAll" onchange="toggleBulkAll()"></th><th>ID</th><th>Name</th><th>Desig</th></tr>
+                    </thead>
+                    <tbody id="bulkBody"></tbody>
+                  </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: SPORTS LIST -->
+        <div id="view-sports" class="section-view">
+          <div class="card">
+            <div class="company-header">Sports Register</div>
+             <!-- Header Countdown -->
+             <div class="countdown-badge" id="countdownTimer2">Loading...</div>
+
+            <div class="action-bar">
+              <button class="btn-large-pdf" onclick="downloadPDF()">Download PDF</button>
+              <button class="btn-bulk-delete" onclick="deleteAll()">Delete All</button>
+            </div>
+
+            <div class="section-subtitle">Overview (Summary) <span>Count</span></div>
+            <div class="sports-dashboard" id="sportSummary"></div>
+
+            <div class="section-subtitle">Registered List (Details) <span>Actions</span></div>
+            
+            <div class="filter-bar">
+              <label style="font-weight:600;">Filter:</label>
+              <select id="sportFilter" class="filter-select" onchange="renderSportTable()">
+                <option value="All">Show All Sports</option>
+                <option value="Tug Of War">Tug Of War</option>
+                <option value="Pot Breaking">Pot Breaking</option>
+                <option value="Sack Race">Sack Race</option>
+                <option value="Basket Toss">Basket Toss</option>
+                <option value="Musical Chair">Musical Chair</option>
+              </select>
+            </div>
+            <div id="sportTable"></div>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <!-- Individual -->
-    <div class="box">
-      <h3>Individual Registration</h3>
-      <input id="searchId" placeholder="Employee ID">
-      <button class="action" onclick="searchEmp()">Search</button>
+    <!-- ANIMATION OVERLAY -->
+    <div id="sportAnimOverlay">
+        <div class="anim-container">
+            <div id="animIcon" style="font-size:40px; font-weight:bold;"></div>
+        </div>
+        <div class="anim-text">Success!</div>
     </div>
 
-    <!-- Bulk -->
-    <div class="box">
-      <h3>Department Bulk Registration</h3>
-      <select id="deptSelect"></select>
-      <select id="bulkSport">
-        <option value="">Select Sport</option>
-        <option>Tug Of War (দড়ি টানা)</option>
-        <option>Pot Breaking (হাড়ি ভাংগা)</option>
-        <option>Sack Race (বস্তা দৌড়)</option>
-        <option>Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
-        <option>Musical Chair (মিউজিক্যাল চেয়ার)</option>
-      </select>
-      <button class="action" onclick="bulkRegister()">Register Department</button>
-    </div>
+    <script>
+      // ===== DATA (Embedding the full list) =====
+      const manpower = [
+      /* ===============================
+         ADMINISTRATION
+      ============================== */
+      { id:"20110", name:"Krishibid Sadeque ibn Shams", dept:"Administration", des:"Chief Co-Ordinator" },
+      { id:"20104", name:"S M Anamul Haque", dept:"Administration", des:"Executive" },
+      { id:"20113", name:"Md. Hamim Hossen", dept:"Administration", des:"Office Assistant" },
+      
+      /* ===============================
+         HR & ADMIN
+      ============================== */
+      { id:"20108", name:"Mohammad Alamgir Hossain", dept:"HR & Admin", des:"Asstt. Manager" },
 
-  </div>
+      /* ===============================
+         ACCOUNTS
+      ============================== */
+      { id:"20107", name:"Md. Mostafizur Rahman", dept:"Accounts", des:"Dpt. Manager" },
+      { id:"20112", name:"Mohammad Forkan", dept:"Accounts", des:"Executive" },
 
-  <!-- SPORTS TAB -->
-  <div id="sportsTab" style="display:none">
-    <div class="box">
-      <button class="action" onclick="downloadPDF()">Download PDF</button>
-    </div>
-    <div id="sportsTable"></div>
-  </div>
+      /* ===============================
+         IT
+      ============================== */
+      { id:"20704", name:"Md. Mahfuzar Rahman Sumon", dept:"IT", des:"Executive" },
+      { id:"20707", name:"Md. Abdul Kader Jelany", dept:"IT", des:"Jr.Executive" },
 
-</div>
+      /* ===============================
+         OPERATION
+      ============================== */
+      { id:"20103", name:"Mohammad Sharif Ahmed", dept:"Operation", des:"Factory Manager" },
+      { id:"20501", name:"Fahim Maruf", dept:"Operation", des:"Manager" },
+      { id:"20502", name:"Ahamed Jaman Rumi", dept:"Operation", des:"Dpt. Manager" },
+      { id:"20503", name:"Md. Saiful Islam", dept:"Operation", des:"Asstt. Manager" },
+      { id:"20511", name:"Khondaker Asaduzzaman Biplob", dept:"Operation", des:"Asstt. Manager" },
+      { id:"20328", name:"Md. Naimul Islam", dept:"Operation", des:"Executive" },
+      { id:"20332", name:"Md. Shahidul Islam Mamun", dept:"Operation", des:"Executive" },
+      { id:"20513", name:"Md. Nazmul Alom", dept:"Operation", des:"Jr.Executive" },
+      { id:"20515", name:"Tayabur Rahman Opi", dept:"Operation", des:"Jr.Executive" },
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <div id="empInfo"></div>
-    <select id="sportSelect">
-      <option value="">Select Sport</option>
-      <option>Tug Of War (দড়ি টানা)</option>
-      <option>Pot Breaking (হাড়ি ভাংগা)</option>
-      <option>Sack Race (বস্তা দৌড়)</option>
-      <option>Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
-      <option>Musical Chair (মিউজিক্যাল চেয়ার)</option>
-    </select>
-    <button class="action" onclick="register()">Done</button>
-    <button class="action" style="background:#7f8c8d" onclick="closeModal()">Cancel</button>
-  </div>
-</div>
+      /* ===============================
+         MAINTENANCE
+      ============================== */
+      { id:"20801", name:"Subhasis Bakul Chandra Ghosh", dept:"Maintenance", des:"Manager" },
+      { id:"20821", name:"S M Farok Rayhan", dept:"Maintenance", des:"Asstt. Manager" },
+      { id:"20303", name:"Mohd. Shamsul Islam", dept:"Maintenance", des:"Sr.Executive" },
+      { id:"20803", name:"Seddekur Rahman", dept:"Maintenance", des:"Supervisor" },
+      { id:"20805", name:"Md. Farhad Hosain", dept:"Maintenance", des:"Supervisor" },
+      { id:"20807", name:"Suman Chandra Das", dept:"Maintenance", des:"Fitter" },
+      { id:"20809", name:"Md. Rahamat Ali", dept:"Maintenance", des:"Generator Opt" },
+      { id:"20810", name:"Md. Akter Hossain", dept:"Maintenance", des:"Fitter" },
+      { id:"20811", name:"Md. Rakibul Hasan Rana", dept:"Maintenance", des:"Sr.Electrician" },
+      { id:"20812", name:"Rahmotullah", dept:"Maintenance", des:"Generator Opt" },
+      { id:"20814", name:"Abu Jafar Mohammed Shaleh", dept:"Maintenance", des:"Technician" },
+      { id:"20815", name:"Mohammad Yasin Arafat", dept:"Maintenance", des:"Electrician" },
+      { id:"20816", name:"Nazrul Islam", dept:"Maintenance", des:"Sr.Electrician" },
+      { id:"20817", name:"Osman Gani", dept:"Maintenance", des:"Forman" },
+      { id:"20819", name:"Md Masud Khan", dept:"Maintenance", des:"Sr.Fitter" },
+      { id:"20824", name:"Md. Fahim", dept:"Maintenance", des:"Sr.Helper" },
+      { id:"20825", name:"Md. Razu Ahmed", dept:"Maintenance", des:"Fitter" },
+      { id:"20826", name:"Md. Arman", dept:"Maintenance", des:"Leath Operator" },
 
-<script>
-/* ===============================
-   DEMO MANPOWER (তুমি replace করবে)
-================================ */
-const manpower = [
-  const manpower = [
-/* ===============================
-   ADMINISTRATION
-================================ */
-{ id:"20110", name:"Krishibid Sadeque ibn Shams", dept:"Administration", des:"Chief Co-Ordinator" },
-{ id:"20104", name:"S M Anamul Haque", dept:"Administration", des:"Executive" },
-{ id:"20113", name:"Md. Hamim Hossen", dept:"Administration", des:"Office Assistant" },
+      /* ===============================
+         VAT
+      ============================== */
+      { id:"20202", name:"K.M. Ashraful Alam", dept:"VAT", des:"Sr.Executive" },
+      { id:"20203", name:"Md. Iqbal Hossain", dept:"VAT", des:"Dpt. Manager" },
+      /* ===============================
+         BUN / STD
+      ============================== */
+      { id:"22101", name:"Md. Rafiq Hosen", dept:"BUN/STD", des:"Operator" },
+      { id:"22103", name:"Md. Mahmudul Hasan", dept:"BUN/STD", des:"Operator" },
+      { id:"22104", name:"Md. Mizanur Rahman", dept:"BUN/STD", des:"Operator" },
+      { id:"22107", name:"Norul Islam", dept:"BUN/STD", des:"Operator" },
+      { id:"22111", name:"MD. BIDDUT MIA", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22119", name:"Md. Mostakim Mia", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22125", name:"Md. Robin", dept:"BUN/STD", des:"Skill Helper" },
+      { id:"22129", name:"Md. Mizan", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22141", name:"Masum (Mosharof Hosan Shohel)", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22147", name:"Md. Rafiqul Islam", dept:"BUN/STD", des:"Sr.Operator" },
+      { id:"22308", name:"Md. Sabuj (Jewel)", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22159", name:"Shafiullah", dept:"BUN/STD", des:"Helper" },
+      { id:"22161", name:"Md. Tariqul Islam", dept:"BUN/STD", des:"Skill Helper" },
+      { id:"21399", name:"Rasel Hossain (Ovi)", dept:"BUN/STD", des:"Helper" },
+      { id:"22165", name:"Md. Kawsar Ahmed", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22168", name:"Arif Miah", dept:"BUN/STD", des:"Helper" },
+      { id:"22169", name:"Md. Saddam Hossen Siyam", dept:"BUN/STD", des:"Sr.Helper" },
+      { id:"22178", name:"Md. Shaporan", dept:"BUN/STD", des:"Helper" },
+      { id:"22186", name:"Md. Josim Uddin", dept:"BUN/STD", des:"Semi Operator" },
+      { id:"21184", name:"Shajal Chandra Shil", dept:"BUN/STD", des:"Helper" },
+      { id:"22194", name:"Tamim Sardar", dept:"BUN/STD", des:"Helper" },
+      { id:"22195", name:"Md. Siyam", dept:"BUN/STD", des:"Helper" },
+      { id:"22197", name:"Md. Rakib Mia", dept:"BUN/STD", des:"Helper" },
+      { id:"22198", name:"Ali", dept:"BUN/STD", des:"Helper" },
+      { id:"22199", name:"Md. Tuofukur Rahman", dept:"BUN/STD", des:"Helper" },
+      { id:"221103", name:"Md. Riaj Uddin", dept:"BUN/STD", des:"Helper" },
+      { id:"221104", name:"Md. Jahidul Islam Jihad", dept:"BUN/STD", des:"Helper" },
+      { id:"221105", name:"Md. Mahfug Islam", dept:"BUN/STD", des:"Helper" },
+      { id:"221106", name:"Tirtha Sarkar", dept:"BUN/STD", des:"Helper" },
+      { id:"221107", name:"Bijoy Majumdar", dept:"BUN/STD", des:"Helper" },
+      { id:"221108", name:"Samim Sordar", dept:"BUN/STD", des:"Helper" },
+      { id:"221109", name:"Md. Midul Rana", dept:"BUN/STD", des:"Helper" },
+      { id:"221110", name:"Md. Shahinur Islam", dept:"BUN/STD", des:"Helper" },
+      { id:"221111", name:"Sohidulla", dept:"BUN/STD", des:"Helper" },
+      { id:"221112", name:"Parbaz Miah", dept:"BUN/STD", des:"Helper" },
+      { id:"221113", name:"Md. Younus", dept:"BUN/STD", des:"Helper" },
+      { id:"221114", name:"Md. Marajul Islam", dept:"BUN/STD", des:"Helper" },
 
-/* ===============================
-   HR & ADMIN
-================================ */
-{ id:"20108", name:"Mohammad Alamgir Hossain", dept:"HR & Admin", des:"Asstt. Manager" },
+      /* ===============================
+         COILING
+      ============================== */
+      { id:"21328", name:"Sobuj Bissas", dept:"Coiling", des:"Jr.Operator" },
+      { id:"21329", name:"Md. Ashikur Rahman", dept:"Coiling", des:"Jr.Operator" },
+      { id:"21341", name:"Riaz Kondoker", dept:"Coiling", des:"Jr.Operator" },
+      { id:"21382", name:"Abubaker Siddik", dept:"Coiling", des:"Sr.Helper" },
+      { id:"21384", name:"Md. Sohel Rana Joadder", dept:"Coiling", des:"Sr.Helper" },
+      { id:"21392", name:"Md. Amir Hossain", dept:"Coiling", des:"Helper" },
+      { id:"21397", name:"Sajol Molla", dept:"Coiling", des:"Sr.Helper" },
+      { id:"21398", name:"Md. Arman Hosen", dept:"Coiling", des:"Helper" },
+      { id:"213103", name:"Sabbir Hasan", dept:"Coiling", des:"Helper" },
+      { id:"213105", name:"Palash Chandra Barmon", dept:"Coiling", des:"Helper" },
+      { id:"213109", name:"Baccu", dept:"Coiling", des:"Helper" },
+      { id:"213110", name:"Md. Arman", dept:"Coiling", des:"Helper" },
+      { id:"213117", name:"Md. Minal Mia", dept:"Coiling", des:"Helper" },
+      { id:"213118", name:"Mohammad Jubairul Islam", dept:"Coiling", des:"Helper" },
+      { id:"213119", name:"Md. Israful Akand", dept:"Coiling", des:"Helper" },
+      { id:"213123", name:"Ariful Islam", dept:"Coiling", des:"Helper" },
+      { id:"211119", name:"Md. Nurol Islam", dept:"Coiling", des:"Helper" },
+      { id:"213125", name:"Md. Jaber Hossain", dept:"Coiling", des:"Helper" },
+      { id:"213128", name:"Md. Monirul Islam", dept:"Coiling", des:"Helper" },
+      { id:"213129", name:"Nayan Mia", dept:"Coiling", des:"Helper" },
 
-/* ===============================
-   ACCOUNTS
-================================ */
-{ id:"20107", name:"Md. Mostafizur Rahman", dept:"Accounts", des:"Dpt. Manager" },
-{ id:"20112", name:"Mohammad Forkan", dept:"Accounts", des:"Executive" },
+      /* ===============================
+         ENAMEL
+      ============================== */
+      { id:"21102", name:"Md. Rasel Shakh", dept:"Enamel", des:"Supervisor" },
+      { id:"21103", name:"Md. Rahim", dept:"Enamel", des:"Operator" },
+      { id:"21105", name:"Mohammad Aiub", dept:"Enamel", des:"Operator" },
+      { id:"21106", name:"Simson Baroi", dept:"Enamel", des:"Operator" },
+      { id:"21108", name:"Ikbal Hossain Sarder", dept:"Enamel", des:"Jr.Operator" },
+      { id:"21109", name:"Md. Kashem", dept:"Enamel", des:"Operator" },
+      { id:"21117", name:"Md. Hafizul Rahman", dept:"Enamel", des:"Jr.Operator" },
+      { id:"21119", name:"Rupesh Chakma", dept:"Enamel", des:"Sr.Helper" },
+      { id:"21120", name:"Md. Humayun Kabir", dept:"Enamel", des:"Operator" },
+      { id:"21138", name:"Md. Shahin Hossain", dept:"Enamel", des:"Operator" },
+      { id:"21169", name:"Md. Anisor Rahman (Rejaul Karim)", dept:"Enamel", des:"Sr.Helper" },
+      { id:"21193", name:"Md. Kamrul Ahmed", dept:"Enamel", des:"Helper" },
+      { id:"211105", name:"Uzzol Hosen", dept:"Enamel", des:"Helper" },
+      { id:"211116", name:"Shopno Odhikari", dept:"Enamel", des:"Helper" },
+      { id:"211118", name:"Taposh Chandra Barmon", dept:"Enamel", des:"Helper" },
+      { id:"211120", name:"Al Hasan", dept:"Enamel", des:"Helper" },
+      { id:"211122", name:"Md. Rashadul Islam", dept:"Enamel", des:"Helper" },
+      { id:"211126", name:"Md. Nur Nobi Arafat", dept:"Enamel", des:"Helper" },
+      { id:"211127", name:"Uzzal Chandara", dept:"Enamel", des:"Helper" },
+      { id:"211128", name:"Md. Towhidul Islam Tarek", dept:"Enamel", des:"Helper" },
+      { id:"211130", name:"Md. Shahidul Islam", dept:"Enamel", des:"Helper" },
 
-/* ===============================
-   IT
-================================ */
-{ id:"20704", name:"Md. Mahfuzar Rahman Sumon", dept:"IT", des:"Executive" },
-{ id:"20707", name:"Md. Abdul Kader Jelany", dept:"IT", des:"Jr.Executive" },
-/* ===============================
-   OPERATION
-================================ */
-{ id:"20103", name:"Mohammad Sharif Ahmed", dept:"Operation", des:"Factory Manager" },
-{ id:"20501", name:"Fahim Maruf", dept:"Operation", des:"Manager" },
-{ id:"20502", name:"Ahamed Jaman Rumi", dept:"Operation", des:"Dpt. Manager" },
-{ id:"20503", name:"Md. Saiful Islam", dept:"Operation", des:"Asstt. Manager" },
-{ id:"20511", name:"Khondaker Asaduzzaman Biplob", dept:"Operation", des:"Asstt. Manager" },
-{ id:"20328", name:"Md. Naimul Islam", dept:"Operation", des:"Executive" },
-{ id:"20332", name:"Md. Shahidul Islam Mamun", dept:"Operation", des:"Executive" },
-{ id:"20513", name:"Md. Nazmul Alom", dept:"Operation", des:"Jr.Executive" },
-{ id:"20515", name:"Tayabur Rahman Opi", dept:"Operation", des:"Jr.Executive" },
+      /* ===============================
+         EXTRUSION
+      ============================== */
+      { id:"22207", name:"Sabuj Sarder", dept:"Extrusion", des:"Jr.Operator" },
+      { id:"22208", name:"Md. Asifur Rahman", dept:"Extrusion", des:"Helper" },
 
-/* ===============================
-   MAINTENANCE
-================================ */
-{ id:"20801", name:"Subhasis Bakul Chandra Ghosh", dept:"Maintenance", des:"Manager" },
-{ id:"20821", name:"S M Farok Rayhan", dept:"Maintenance", des:"Asstt. Manager" },
-{ id:"20303", name:"Mohd. Shamsul Islam", dept:"Maintenance", des:"Sr.Executive" },
-{ id:"20803", name:"Seddekur Rahman", dept:"Maintenance", des:"Supervisor" },
-{ id:"20805", name:"Md. Farhad Hosain", dept:"Maintenance", des:"Supervisor" },
-{ id:"20807", name:"Suman Chandra Das", dept:"Maintenance", des:"Fitter" },
-{ id:"20809", name:"Md. Rahamat Ali", dept:"Maintenance", des:"Generator Opt" },
-{ id:"20810", name:"Md. Akter Hossain", dept:"Maintenance", des:"Fitter" },
-{ id:"20811", name:"Md. Rakibul Hasan Rana", dept:"Maintenance", des:"Sr.Electrician" },
-{ id:"20812", name:"Rahmotullah", dept:"Maintenance", des:"Generator Opt" },
-{ id:"20814", name:"Abu Jafar Mohammed Shaleh", dept:"Maintenance", des:"Technician" },
-{ id:"20815", name:"Mohammad Yasin Arafat", dept:"Maintenance", des:"Electrician" },
-{ id:"20816", name:"Nazrul Islam", dept:"Maintenance", des:"Sr.Electrician" },
-{ id:"20817", name:"Osman Gani", dept:"Maintenance", des:"Forman" },
-{ id:"20819", name:"Md Masud Khan", dept:"Maintenance", des:"Sr.Fitter" },
-{ id:"20824", name:"Md. Fahim", dept:"Maintenance", des:"Sr.Helper" },
-{ id:"20825", name:"Md. Razu Ahmed", dept:"Maintenance", des:"Fitter" },
-{ id:"20826", name:"Md. Arman", dept:"Maintenance", des:"Leath Operator" },
+      /* ===============================
+         INSULATION
+      ============================== */
+      { id:"21202", name:"Salamot Ullah", dept:"Insulation", des:"Jr.Operator" },
+      { id:"21205", name:"Md. Forkan", dept:"Insulation", des:"Operator" },
+      { id:"21210", name:"Md. Ashraful Alam", dept:"Insulation", des:"Jr.Operator" },
+      { id:"21218", name:"Md. Faridul Islam", dept:"Insulation", des:"Jr.Operator" },
+      { id:"21219", name:"Salman", dept:"Insulation", des:"Operator" },
+      { id:"21232", name:"Eleas Talukdar", dept:"Insulation", des:"Skill Helper" },
+      { id:"21236", name:"Md. Shakhaoat Hossain Soman (Nazmul Huda)", dept:"Insulation", des:"Sr.Helper" },
+      { id:"21358", name:"Md. Sujon Mia (Alamgir)", dept:"Insulation", des:"Skill Helper" },
+      { id:"21363", name:"Md. Sabbir Mia", dept:"Insulation", des:"Skill Helper" },
+      { id:"21621", name:"Md. Rofikul Islam", dept:"Insulation", des:"Sr.Operator" },
+      { id:"21629", name:"Md. Sobahan Miah", dept:"Insulation", des:"Skill Helper" },
+      { id:"21637", name:"Md. Raju Hossen", dept:"Insulation", des:"Sr.Helper" },
+      { id:"21263", name:"Md. Sujon", dept:"Insulation", des:"Helper" },
+      { id:"21264", name:"Md. Nobin Sarker", dept:"Insulation", des:"Helper" },
+      { id:"21269", name:"Shimon Baroi", dept:"Insulation", des:"Helper" },
+      { id:"21270", name:"Jahid Hossain", dept:"Insulation", des:"Helper" },
+      { id:"21271", name:"Sohel Nakib", dept:"Insulation", des:"Helper" },
+      { id:"21273", name:"Md. Sohag Mia", dept:"Insulation", des:"Helper" },
+      { id:"21274", name:"Md. Hafizul Islam Sabbir", dept:"Insulation", des:"Helper" },
 
-/* ===============================
-   VAT
-================================ */
-{ id:"20202", name:"K.M. Ashraful Alam", dept:"VAT", des:"Sr.Executive" },
-{ id:"20203", name:"Md. Iqbal Hossain", dept:"VAT", des:"Dpt. Manager" },
-/* ===============================
-   BUN / STD
-================================ */
-{ id:"22101", name:"Md. Rafiq Hosen", dept:"BUN/STD", des:"Operator" },
-{ id:"22103", name:"Md. Mahmudul Hasan", dept:"BUN/STD", des:"Operator" },
-{ id:"22104", name:"Md. Mizanur Rahman", dept:"BUN/STD", des:"Operator" },
-{ id:"22107", name:"Norul Islam", dept:"BUN/STD", des:"Operator" },
-{ id:"22111", name:"MD. BIDDUT MIA", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22119", name:"Md. Mostakim Mia", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22125", name:"Md. Robin", dept:"BUN/STD", des:"Skill Helper" },
-{ id:"22129", name:"Md. Mizan", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22141", name:"Masum (Mosharof Hosan Shohel)", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22147", name:"Md. Rafiqul Islam", dept:"BUN/STD", des:"Sr.Operator" },
-{ id:"22308", name:"Md. Sabuj (Jewel)", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22159", name:"Shafiullah", dept:"BUN/STD", des:"Helper" },
-{ id:"22161", name:"Md. Tariqul Islam", dept:"BUN/STD", des:"Skill Helper" },
-{ id:"21399", name:"Rasel Hossain (Ovi)", dept:"BUN/STD", des:"Helper" },
-{ id:"22165", name:"Md. Kawsar Ahmed", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22168", name:"Arif Miah", dept:"BUN/STD", des:"Helper" },
-{ id:"22169", name:"Md. Saddam Hossen Siyam", dept:"BUN/STD", des:"Sr.Helper" },
-{ id:"22178", name:"Md. Shaporan", dept:"BUN/STD", des:"Helper" },
-{ id:"22186", name:"Md. Josim Uddin", dept:"BUN/STD", des:"Semi Operator" },
-{ id:"21184", name:"Shajal Chandra Shil", dept:"BUN/STD", des:"Helper" },
-{ id:"22194", name:"Tamim Sardar", dept:"BUN/STD", des:"Helper" },
-{ id:"22195", name:"Md. Siyam", dept:"BUN/STD", des:"Helper" },
-{ id:"22197", name:"Md. Rakib Mia", dept:"BUN/STD", des:"Helper" },
-{ id:"22198", name:"Ali", dept:"BUN/STD", des:"Helper" },
-{ id:"22199", name:"Md. Tuofukur Rahman", dept:"BUN/STD", des:"Helper" },
-{ id:"221103", name:"Md. Riaj Uddin", dept:"BUN/STD", des:"Helper" },
-{ id:"221104", name:"Md. Jahidul Islam Jihad", dept:"BUN/STD", des:"Helper" },
-{ id:"221105", name:"Md. Mahfug Islam", dept:"BUN/STD", des:"Helper" },
-{ id:"221106", name:"Tirtha Sarkar", dept:"BUN/STD", des:"Helper" },
-{ id:"221107", name:"Bijoy Majumdar", dept:"BUN/STD", des:"Helper" },
-{ id:"221108", name:"Samim Sordar", dept:"BUN/STD", des:"Helper" },
-{ id:"221109", name:"Md. Midul Rana", dept:"BUN/STD", des:"Helper" },
-{ id:"221110", name:"Md. Shahinur Islam", dept:"BUN/STD", des:"Helper" },
-{ id:"221111", name:"Sohidulla", dept:"BUN/STD", des:"Helper" },
-{ id:"221112", name:"Parbaz Miah", dept:"BUN/STD", des:"Helper" },
-{ id:"221113", name:"Md. Younus", dept:"BUN/STD", des:"Helper" },
-{ id:"221114", name:"Md. Marajul Islam", dept:"BUN/STD", des:"Helper" },
+      /* ===============================
+         LOGISTIC
+      ============================== */
+      { id:"20401", name:"K.M. Abdullah-Al-Mehbub", dept:"Logistic", des:"Sr.Executive" },
+      { id:"20402", name:"Abdus Salam", dept:"Logistic", des:"Dpt. Manager" },
+      { id:"20403", name:"Md. Mahamud Hassan", dept:"Logistic", des:"Operator" },
+      { id:"20407", name:"Md. Abdullah All Mamun Sarkar", dept:"Logistic", des:"Jr.Operator" },
+      { id:"20411", name:"Md. Sohel Mallik", dept:"Logistic", des:"Operator" },
+      { id:"20414", name:"Md. Nasir Uddin", dept:"Logistic", des:"Operator" },
+      { id:"20415", name:"Md. Mahfuz", dept:"Logistic", des:"Operator" },
+      { id:"20419", name:"MD. IMRAN KHAN", dept:"Logistic", des:"Sr.Executive" },
+      { id:"20437", name:"Md. Lablu Hosain", dept:"Logistic", des:"Sr.Helper" },
+      { id:"20438", name:"Md. Golam Mustofa", dept:"Logistic", des:"Supervisor" },
+      { id:"20441", name:"Tarikul Mredha", dept:"Logistic", des:"Sr.Helper" },
+      { id:"20444", name:"Md. Farzanul Islam", dept:"Logistic", des:"Jr.Operator" },
+      { id:"20446", name:"Md. Akibul Islam", dept:"Logistic", des:"Helper" },
+      { id:"20447", name:"Sojib Sheikh (Tipu Sultan)", dept:"Logistic", des:"Helper" },
+      { id:"20449", name:"Md. Faruk (Tarek Majhi)", dept:"Logistic", des:"Helper" },
+      { id:"20451", name:"Md. Rana", dept:"Logistic", des:"Helper" },
+      { id:"20457", name:"Hashina Akther", dept:"Logistic", des:"Helper" },
+      { id:"20463", name:"Md. Al-Amin Islam", dept:"Logistic", des:"Jr.Executive" },
+      { id:"20468", name:"Md. Aynul Mia", dept:"Logistic", des:"Helper" },
+      { id:"20470", name:"Md. Sohrab Hossain Mollah", dept:"Logistic", des:"Executive" },
+      { id:"20476", name:"Md. Mominul Islam", dept:"Logistic", des:"Sr.Helper" },
+      { id:"20479", name:"Md. Ashik Mia", dept:"Logistic", des:"Helper" },
+      { id:"20481", name:"Sumon Ali", dept:"Logistic", des:"Jr.Executive" },
+      { id:"20484", name:"Md. Ariful Islam", dept:"Logistic", des:"Helper" },
+      { id:"20485", name:"Md. Bipul Mia", dept:"Logistic", des:"Helper" },
+      { id:"20486", name:"Sree Prodip Kumar Hiday", dept:"Logistic", des:"Helper" },
+      { id:"20488", name:"Md. Mojahid Ali", dept:"Logistic", des:"Helper" },
+      { id:"20495", name:"Md. Pranto", dept:"Logistic", des:"Helper" },
+      { id:"20497", name:"Md. Emon Hossain", dept:"Logistic", des:"Helper" },
+      { id:"20499", name:"Istiak Hossan", dept:"Logistic", des:"Jr.Executive" },
+      { id:"204101", name:"Md. Tanvir Ahmmed", dept:"Logistic", des:"Helper" },
+      { id:"204102", name:"Sunil Chandro Ray", dept:"Logistic", des:"Helper" },
+      { id:"22311", name:"Sahajalal", dept:"Logistic", des:"Helper" },
+      { id:"204106", name:"Md. Farhad", dept:"Logistic", des:"Helper" },
+      { id:"204110", name:"Billal Hossin Babu", dept:"Logistic", des:"Helper" },
+      { id:"204113", name:"Md. Tanvir Ahmmed Tomal", dept:"Logistic", des:"Helper" },
+      { id:"204115", name:"Al Amin", dept:"Logistic", des:"Helper" },
+      { id:"204117", name:"Md. Omor Faruk", dept:"Logistic", des:"Helper" },
 
-/* ===============================
-   COILING
-================================ */
-{ id:"21328", name:"Sobuj Bissas", dept:"Coiling", des:"Jr.Operator" },
-{ id:"21329", name:"Md. Ashikur Rahman", dept:"Coiling", des:"Jr.Operator" },
-{ id:"21341", name:"Riaz Kondoker", dept:"Coiling", des:"Jr.Operator" },
-{ id:"21382", name:"Abubaker Siddik", dept:"Coiling", des:"Sr.Helper" },
-{ id:"21384", name:"Md. Sohel Rana Joadder", dept:"Coiling", des:"Sr.Helper" },
-{ id:"21392", name:"Md. Amir Hossain", dept:"Coiling", des:"Helper" },
-{ id:"21397", name:"Sajol Molla", dept:"Coiling", des:"Sr.Helper" },
-{ id:"21398", name:"Md. Arman Hosen", dept:"Coiling", des:"Helper" },
-{ id:"213103", name:"Sabbir Hasan", dept:"Coiling", des:"Helper" },
-{ id:"213105", name:"Palash Chandra Barmon", dept:"Coiling", des:"Helper" },
-{ id:"213109", name:"Baccu", dept:"Coiling", des:"Helper" },
-{ id:"213110", name:"Md. Arman", dept:"Coiling", des:"Helper" },
-{ id:"213117", name:"Md. Minal Mia", dept:"Coiling", des:"Helper" },
-{ id:"213118", name:"Mohammad Jubairul Islam", dept:"Coiling", des:"Helper" },
-{ id:"213119", name:"Md. Israful Akand", dept:"Coiling", des:"Helper" },
-{ id:"213123", name:"Ariful Islam", dept:"Coiling", des:"Helper" },
-{ id:"211119", name:"Md. Nurol Islam", dept:"Coiling", des:"Helper" },
-{ id:"213125", name:"Md. Jaber Hossain", dept:"Coiling", des:"Helper" },
-{ id:"213128", name:"Md. Monirul Islam", dept:"Coiling", des:"Helper" },
-{ id:"213129", name:"Nayan Mia", dept:"Coiling", des:"Helper" },
-/* ===============================
-   ENAMEL
-================================ */
-{ id:"21102", name:"Md. Rasel Shakh", dept:"Enamel", des:"Supervisor" },
-{ id:"21103", name:"Md. Rahim", dept:"Enamel", des:"Operator" },
-{ id:"21105", name:"Mohammad Aiub", dept:"Enamel", des:"Operator" },
-{ id:"21106", name:"Simson Baroi", dept:"Enamel", des:"Operator" },
-{ id:"21108", name:"Ikbal Hossain Sarder", dept:"Enamel", des:"Jr.Operator" },
-{ id:"21109", name:"Md. Kashem", dept:"Enamel", des:"Operator" },
-{ id:"21117", name:"Md. Hafizul Rahman", dept:"Enamel", des:"Jr.Operator" },
-{ id:"21119", name:"Rupesh Chakma", dept:"Enamel", des:"Sr.Helper" },
-{ id:"21120", name:"Md. Humayun Kabir", dept:"Enamel", des:"Operator" },
-{ id:"21138", name:"Md. Shahin Hossain", dept:"Enamel", des:"Operator" },
-{ id:"21169", name:"Md. Anisor Rahman (Rejaul Karim)", dept:"Enamel", des:"Sr.Helper" },
-{ id:"21193", name:"Md. Kamrul Ahmed", dept:"Enamel", des:"Helper" },
-{ id:"211105", name:"Uzzol Hosen", dept:"Enamel", des:"Helper" },
-{ id:"211116", name:"Shopno Odhikari", dept:"Enamel", des:"Helper" },
-{ id:"211118", name:"Taposh Chandra Barmon", dept:"Enamel", des:"Helper" },
-{ id:"211120", name:"Al Hasan", dept:"Enamel", des:"Helper" },
-{ id:"211122", name:"Md. Rashadul Islam", dept:"Enamel", des:"Helper" },
-{ id:"211126", name:"Md. Nur Nobi Arafat", dept:"Enamel", des:"Helper" },
-{ id:"211127", name:"Uzzal Chandara", dept:"Enamel", des:"Helper" },
-{ id:"211128", name:"Md. Towhidul Islam Tarek", dept:"Enamel", des:"Helper" },
-{ id:"211130", name:"Md. Shahidul Islam", dept:"Enamel", des:"Helper" },
+      /* ===============================
+         STORE
+      ============================== */
+      { id:"21501", name:"Md. Maminul Hoque", dept:"Store", des:"Asstt. Manager" },
+      { id:"21503", name:"Mohammad Abdullah Kawsar Hakim", dept:"Store", des:"Sr.Executive" },
+      { id:"20461", name:"Md. Shamim", dept:"Store", des:"Executive" },
+      { id:"21505", name:"Md. Sanaul Haque", dept:"Store", des:"Jr.Executive" },
+      { id:"21506", name:"Md. Mustak Ahmmed", dept:"Store", des:"Jr.Executive" },
 
-/* ===============================
-   EXTRUSION
-================================ */
-{ id:"22207", name:"Sabuj Sarder", dept:"Extrusion", des:"Jr.Operator" },
-{ id:"22208", name:"Md. Asifur Rahman", dept:"Extrusion", des:"Helper" },
+      /* ===============================
+         GENERAL
+      ============================== */
+      { id:"22001", name:"Bejendra Nath Roy", dept:"General", des:"Cook" },
+      { id:"22021", name:"Rahima", dept:"General", des:"Cleaner" },
+      { id:"22022", name:"Year Mohammod Faruk", dept:"General", des:"Sr. Office Boy" },
+      { id:"22030", name:"Mst. Saleha Akhtar", dept:"General", des:"Cleaner" },
+      { id:"22054", name:"Mst. Selina Begum", dept:"General", des:"Cleaner" },
+      { id:"22061", name:"Mst. Aklima", dept:"General", des:"Cleaner" },
+      { id:"22063", name:"Nasima Begum 2", dept:"General", des:"Cleaner" },
+      { id:"22076", name:"Bisho Doom", dept:"General", des:"Sweeper" },
+      { id:"22086", name:"Mst. Sheuli Begum", dept:"General", des:"Cleaner" },
+      { id:"22096", name:"Pancha Rani Pal", dept:"General", des:"Cleaner" },
+      { id:"20469", name:"Md. Mehedi Hasan", dept:"General", des:"Carpainter" },
+      { id:"20487", name:"Allil Ahmed", dept:"General", des:"Helper" },
+      { id:"220109", name:"Josna Rani", dept:"General", des:"Sweeper" },
+      { id:"220112", name:"Sarifa Begum", dept:"General", des:"Cleaner" },
+      { id:"220113", name:"Rony Lal", dept:"General", des:"Sweeper" },
+      { id:"220122", name:"Mst. Rahima", dept:"General", des:"Cleaner" },
+      { id:"220123", name:"Beauty Akter", dept:"General", des:"Cleaner" },
+      { id:"220124", name:"Tuhin", dept:"General", des:"Helper" },
+      { id:"220131", name:"Mynur Begom", dept:"General", des:"Cleaner" },
+      { id:"220134", name:"Kabir Hossen", dept:"General", des:"Office Boy" },
+      { id:"220140", name:"Shahid Ulla", dept:"General", des:"Cook" },
+      { id:"220146", name:"Md. Sohel Hosen", dept:"General", des:"Office Boy" },
+      { id:"220148", name:"Md. Sumon Mia", dept:"General", des:"Helper" },
 
-/* ===============================
-   INSULATION
-================================ */
-{ id:"21202", name:"Salamot Ullah", dept:"Insulation", des:"Jr.Operator" },
-{ id:"21205", name:"Md. Forkan", dept:"Insulation", des:"Operator" },
-{ id:"21210", name:"Md. Ashraful Alam", dept:"Insulation", des:"Jr.Operator" },
-{ id:"21218", name:"Md. Faridul Islam", dept:"Insulation", des:"Jr.Operator" },
-{ id:"21219", name:"Salman", dept:"Insulation", des:"Operator" },
-{ id:"21232", name:"Eleas Talukdar", dept:"Insulation", des:"Skill Helper" },
-{ id:"21236", name:"Md. Shakhaoat Hossain Soman (Nazmul Huda)", dept:"Insulation", des:"Sr.Helper" },
-{ id:"21358", name:"Md. Sujon Mia (Alamgir)", dept:"Insulation", des:"Skill Helper" },
-{ id:"21363", name:"Md. Sabbir Mia", dept:"Insulation", des:"Skill Helper" },
-{ id:"21621", name:"Md. Rofikul Islam", dept:"Insulation", des:"Sr.Operator" },
-{ id:"21629", name:"Md. Sobahan Miah", dept:"Insulation", des:"Skill Helper" },
-{ id:"21637", name:"Md. Raju Hossen", dept:"Insulation", des:"Sr.Helper" },
-{ id:"21263", name:"Md. Sujon", dept:"Insulation", des:"Helper" },
-{ id:"21264", name:"Md. Nobin Sarker", dept:"Insulation", des:"Helper" },
-{ id:"21269", name:"Shimon Baroi", dept:"Insulation", des:"Helper" },
-{ id:"21270", name:"Jahid Hossain", dept:"Insulation", des:"Helper" },
-{ id:"21271", name:"Sohel Nakib", dept:"Insulation", des:"Helper" },
-{ id:"21273", name:"Md. Sohag Mia", dept:"Insulation", des:"Helper" },
-{ id:"21274", name:"Md. Hafizul Islam Sabbir", dept:"Insulation", des:"Helper" },
-/* ===============================
-   LOGISTIC
-================================ */
-{ id:"20401", name:"K.M. Abdullah-Al-Mehbub", dept:"Logistic", des:"Sr.Executive" },
-{ id:"20402", name:"Abdus Salam", dept:"Logistic", des:"Dpt. Manager" },
-{ id:"20403", name:"Md. Mahamud Hassan", dept:"Logistic", des:"Operator" },
-{ id:"20407", name:"Md. Abdullah All Mamun Sarkar", dept:"Logistic", des:"Jr.Operator" },
-{ id:"20411", name:"Md. Sohel Mallik", dept:"Logistic", des:"Operator" },
-{ id:"20414", name:"Md. Nasir Uddin", dept:"Logistic", des:"Operator" },
-{ id:"20415", name:"Md. Mahfuz", dept:"Logistic", des:"Operator" },
-{ id:"20419", name:"MD. IMRAN KHAN", dept:"Logistic", des:"Sr.Executive" },
-{ id:"20437", name:"Md. Lablu Hosain", dept:"Logistic", des:"Sr.Helper" },
-{ id:"20438", name:"Md. Golam Mustofa", dept:"Logistic", des:"Supervisor" },
-{ id:"20441", name:"Tarikul Mredha", dept:"Logistic", des:"Sr.Helper" },
-{ id:"20444", name:"Md. Farzanul Islam", dept:"Logistic", des:"Jr.Operator" },
-{ id:"20446", name:"Md. Akibul Islam", dept:"Logistic", des:"Helper" },
-{ id:"20447", name:"Sojib Sheikh (Tipu Sultan)", dept:"Logistic", des:"Helper" },
-{ id:"20449", name:"Md. Faruk (Tarek Majhi)", dept:"Logistic", des:"Helper" },
-{ id:"20451", name:"Md. Rana", dept:"Logistic", des:"Helper" },
-{ id:"20457", name:"Hashina Akther", dept:"Logistic", des:"Helper" },
-{ id:"20463", name:"Md. Al-Amin Islam", dept:"Logistic", des:"Jr.Executive" },
-{ id:"20468", name:"Md. Aynul Mia", dept:"Logistic", des:"Helper" },
-{ id:"20470", name:"Md. Sohrab Hossain Mollah", dept:"Logistic", des:"Executive" },
-{ id:"20476", name:"Md. Mominul Islam", dept:"Logistic", des:"Sr.Helper" },
-{ id:"20479", name:"Md. Ashik Mia", dept:"Logistic", des:"Helper" },
-{ id:"20481", name:"Sumon Ali", dept:"Logistic", des:"Jr.Executive" },
-{ id:"20484", name:"Md. Ariful Islam", dept:"Logistic", des:"Helper" },
-{ id:"20485", name:"Md. Bipul Mia", dept:"Logistic", des:"Helper" },
-{ id:"20486", name:"Sree Prdip Kumar Hiday", dept:"Logistic", des:"Helper" },
-{ id:"20488", name:"Md. Mojahid Ali", dept:"Logistic", des:"Helper" },
-{ id:"20495", name:"Md. Pranto", dept:"Logistic", des:"Helper" },
-{ id:"20497", name:"Md. Emon Hossain", dept:"Logistic", des:"Helper" },
-{ id:"20499", name:"Istiak Hossan", dept:"Logistic", des:"Jr.Executive" },
-{ id:"204101", name:"Md. Tanvir Ahmmed", dept:"Logistic", des:"Helper" },
-{ id:"204102", name:"Sunil Chandro Ray", dept:"Logistic", des:"Helper" },
-{ id:"22311", name:"Sahajalal", dept:"Logistic", des:"Helper" },
-{ id:"204106", name:"Md. Farhad", dept:"Logistic", des:"Helper" },
-{ id:"204110", name:"Billal Hossin Babu", dept:"Logistic", des:"Helper" },
-{ id:"204113", name:"Md. Tanvir Ahmmed Tomal", dept:"Logistic", des:"Helper" },
-{ id:"204115", name:"Al Amin", dept:"Logistic", des:"Helper" },
-{ id:"204117", name:"Md. Omor Faruk", dept:"Logistic", des:"Helper" },
+      /* ===============================
+         PVC
+      ============================== */
+      { id:"22301", name:"Debo Brata Acherjya", dept:"PVC", des:"Operator" },
+      { id:"22307", name:"Md. Golzar Hossan", dept:"PVC", des:"Helper" },
+      { id:"22309", name:"Aminul Islam", dept:"PVC", des:"Helper" },
+      { id:"22313", name:"Ahadur Rahman", dept:"PVC", des:"Helper" },
 
-/* ===============================
-   STORE
-================================ */
-{ id:"21501", name:"Md. Maminul Hoque", dept:"Store", des:"Asstt. Manager" },
-{ id:"21503", name:"Mohammad Abdullah Kawsar Hakim", dept:"Store", des:"Sr.Executive" },
-{ id:"20461", name:"Md. Shamim", dept:"Store", des:"Executive" },
-{ id:"21505", name:"Md. Sanaul Haque", dept:"Store", des:"Jr.Executive" },
-{ id:"21506", name:"Md. Mustak Ahmmed", dept:"Store", des:"Jr.Executive" },
+      /* ===============================
+         PVC CUTTING
+      ============================== */
+      { id:"22024", name:"Parul Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"22033", name:"Sreey Gita Rani Somdar", dept:"PVC Cutting", des:"Helper" },
+      { id:"22034", name:"Fatema Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"22035", name:"Shmuli Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"22036", name:"Mst. Bebi Khatun", dept:"PVC Cutting", des:"Helper" },
+      { id:"22060", name:"Lyli Begum", dept:"PVC Cutting", des:"Cleaner" },
+      { id:"22064", name:"Sreemoti Chapola Rani", dept:"PVC Cutting", des:"Helper" },
+      { id:"22090", name:"Shilpi Akter", dept:"PVC Cutting", des:"Helper" },
+      { id:"22091", name:"Mst. Monzoara", dept:"PVC Cutting", des:"Helper" },
+      { id:"22055", name:"Mst Ruzina Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"220111", name:"Argina Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"220118", name:"Mst. Laky Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"220126", name:"Khadiza Begum", dept:"PVC Cutting", des:"Helper" },
+      { id:"220127", name:"Moriomer Nesa", dept:"PVC Cutting", des:"Helper" },
 
-/* ===============================
-   GENERAL
-================================ */
-{ id:"22001", name:"Bejendra Nath Roy", dept:"General", des:"Cook" },
-{ id:"22021", name:"Rahima", dept:"General", des:"Cleaner" },
-{ id:"22022", name:"Year Mohammod Faruk", dept:"General", des:"Sr. Office Boy" },
-{ id:"22030", name:"Mst. Saleha Aktar", dept:"General", des:"Cleaner" },
-{ id:"22054", name:"Mst. Selina Begum", dept:"General", des:"Cleaner" },
-{ id:"22061", name:"Mst. Aklima", dept:"General", des:"Cleaner" },
-{ id:"22063", name:"Nasima Begum 2", dept:"General", des:"Cleaner" },
-{ id:"22076", name:"Bisho Doom", dept:"General", des:"Sweeper" },
-{ id:"22086", name:"Mst. Sheuli Begum", dept:"General", des:"Cleaner" },
-{ id:"22096", name:"Pancha Rani Pal", dept:"General", des:"Cleaner" },
-{ id:"20469", name:"Md. Mehedi Hasan", dept:"General", des:"Carpainter" },
-{ id:"20487", name:"Allil Ahmed", dept:"General", des:"Helper" },
-{ id:"220109", name:"Josna Rani", dept:"General", des:"Sweeper" },
-{ id:"220112", name:"Sarifa Begum", dept:"General", des:"Cleaner" },
-{ id:"220113", name:"Rony Lal", dept:"General", des:"Sweeper" },
-{ id:"220122", name:"Mst. Rahima", dept:"General", des:"Cleaner" },
-{ id:"220123", name:"Beauty Akter", dept:"General", des:"Cleaner" },
-{ id:"220124", name:"Tuhin", dept:"General", des:"Helper" },
-{ id:"220131", name:"Mynur Begom", dept:"General", des:"Cleaner" },
-{ id:"220134", name:"Kabir Hossen", dept:"General", des:"Office Boy" },
-{ id:"220140", name:"Shahid Ulla", dept:"General", des:"Cook" },
-{ id:"220146", name:"Md. Sohel Hosen", dept:"General", des:"Office Boy" },
-{ id:"220148", name:"Md. Sumon Mia", dept:"General", des:"Helper" },
-/* ===============================
-   PVC
-================================ */
-{ id:"22301", name:"Debo Brata Acherjya", dept:"PVC", des:"Operator" },
-{ id:"22307", name:"Md. Golzar Hossan", dept:"PVC", des:"Helper" },
-{ id:"22309", name:"Aminul Islam", dept:"PVC", des:"Helper" },
-{ id:"22313", name:"Ahadur Rahman", dept:"PVC", des:"Helper" },
+      /* ===============================
+         PAPER COVERING
+      ============================== */
+      { id:"21802", name:"Md. Baccu Miah", dept:"Paper Covering", des:"Sr.Operator" },
+      { id:"21804", name:"Md. Aslam Hossain", dept:"Paper Covering", des:"Operator" },
+      { id:"21805", name:"Sibbur", dept:"Paper Covering", des:"Jr.Operator" },
+      { id:"21806", name:"Amir Hossain Chakder", dept:"Paper Covering", des:"Skill Helper" },
+      { id:"21810", name:"Shree Adesh Chandra", dept:"Paper Covering", des:"Skill Helper" },
+      { id:"21814", name:"Md. Najimul Islam", dept:"Paper Covering", des:"Helper" },
+      { id:"21818", name:"Sohel Chakma", dept:"Paper Covering", des:"Helper" },
 
-/* ===============================
-   PVC CUTTING
-================================ */
-{ id:"22024", name:"Parul Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"22033", name:"Sreey Gita Rani Somdar", dept:"PVC Cutting", des:"Helper" },
-{ id:"22034", name:"Fatema Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"22035", name:"Shmuli Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"22036", name:"Mst. Bebi Khatun", dept:"PVC Cutting", des:"Helper" },
-{ id:"22060", name:"Lyli Begum", dept:"PVC Cutting", des:"Cleaner" },
-{ id:"22064", name:"Sreemoti Chapola Rani", dept:"PVC Cutting", des:"Helper" },
-{ id:"22090", name:"Shilpi Akter", dept:"PVC Cutting", des:"Helper" },
-{ id:"22091", name:"Mst. Monzoara", dept:"PVC Cutting", des:"Helper" },
-{ id:"22055", name:"Mst Ruzina Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"220111", name:"Argina Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"220118", name:"Mst. Laky Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"220126", name:"Khadiza Begum", dept:"PVC Cutting", des:"Helper" },
-{ id:"220127", name:"Moriomer Nesa", dept:"PVC Cutting", des:"Helper" },
+      /* ===============================
+         SHEATHING
+      ============================== */
+      { id:"21601", name:"Md. Miraz Uddin", dept:"Sheathing", des:"Sr.Operator" },
+      { id:"21604", name:"Mohammad Enamul Hoque", dept:"Sheathing", des:"Sr.Operator" },
+      { id:"21613", name:"Md. Polash Mia (Farhad)", dept:"Sheathing", des:"Jr.Operator" },
+      { id:"21617", name:"Md. Anisur Haque", dept:"Sheathing", des:"Sr.Helper" },
+      { id:"21622", name:"Halim", dept:"Sheathing", des:"Sr.Operator" },
+      { id:"21623", name:"Md. Shahajahan", dept:"Sheathing", des:"Sr.Helper" },
+      { id:"21626", name:"Sumon Islam", dept:"Sheathing", des:"Jr.Operator" },
+      { id:"22306", name:"Md. Rakibul Hossen Repon", dept:"Sheathing", des:"Sr.Helper" },
+      { id:"21641", name:"Md. Shimul Mia", dept:"Sheathing", des:"Helper" },
+      { id:"21643", name:"Md. Kawsar Hossain", dept:"Sheathing", des:"Helper" },
+      { id:"21644", name:"Md. Jonayet Mia", dept:"Sheathing", des:"Helper" },
+      { id:"21655", name:"Sharuf Mirdha", dept:"Sheathing", des:"Helper" },
+      { id:"21658", name:"Md. Shafiqul Alam Himel", dept:"Sheathing", des:"Helper" },
+      { id:"21660", name:"SK Md. Salman Arefeen", dept:"Sheathing", des:"Helper" },
+      { id:"21662", name:"Anonto Dash", dept:"Sheathing", des:"Helper" },
+      { id:"21665", name:"Sifat Ahmed", dept:"Sheathing", des:"Helper" },
+      { id:"21666", name:"Md. Shahn Islam", dept:"Sheathing", des:"Helper" },
+      { id:"21667", name:"Ajmir Hasan", dept:"Sheathing", des:"Helper" },
+      { id:"21668", name:"Abu Hena Md. Nayem", dept:"Sheathing", des:"Helper" },
+      { id:"21670", name:"Subroto Roy Choyon", dept:"Sheathing", des:"Helper" },
+      { id:"21671", name:"Md. Anamul Hossain", dept:"Sheathing", des:"Helper" },
+      { id:"21672", name:"Nayon Molla", dept:"Sheathing", des:"Helper" },
 
-/* ===============================
-   PAPER COVERING
-================================ */
-{ id:"21802", name:"Md. Baccu Miah", dept:"Paper Covering", des:"Sr.Operator" },
-{ id:"21804", name:"Md. Aslam Hossain", dept:"Paper Covering", des:"Operator" },
-{ id:"21805", name:"Sibbur", dept:"Paper Covering", des:"Jr.Operator" },
-{ id:"21806", name:"Amir Hossain Chakder", dept:"Paper Covering", des:"Skill Helper" },
-{ id:"21810", name:"Shree Adesh Chandra", dept:"Paper Covering", des:"Skill Helper" },
-{ id:"21814", name:"Md. Najimul Islam", dept:"Paper Covering", des:"Helper" },
-{ id:"21818", name:"Sohel Chakma", dept:"Paper Covering", des:"Helper" },
+      /* ===============================
+         TRANSPORT
+      ============================== */
+      { id:"22020", name:"Md. Babul Bepari -2", dept:"Transport", des:"Driver" },
+      { id:"22041", name:"Md. Ariful", dept:"Transport", des:"Driver" },
+      { id:"22056", name:"Md. Jamir Hosen", dept:"Transport", des:"Helper" },
+      { id:"22058", name:"Md. Shahin Sarkar-2", dept:"Transport", des:"Driver" },
+      { id:"22070", name:"Md. Bappi", dept:"Transport", des:"Driver" },
+      { id:"22071", name:"Md. Farid Mia", dept:"Transport", des:"Driver" },
+      { id:"22074", name:"Md. Zahirul Islam", dept:"Transport", des:"Helper" },
+      { id:"21631", name:"Md. Nazmul Hossain", dept:"Transport", des:"Driver" },
+      { id:"22078", name:"Md. Foysal", dept:"Transport", des:"Driver" },
+      { id:"22079", name:"Md. Iqbal Hosen", dept:"Transport", des:"Driver" },
+      { id:"22080", name:"Rajib Sheikh", dept:"Transport", des:"Driver" },
+      { id:"22081", name:"Md. Jasim Uddin", dept:"Transport", des:"Helper" },
+      { id:"20822", name:"Sree Jony Chandra Paul", dept:"Transport", des:"Motor Machanic" },
+      { id:"20431", name:"Md. Jashim", dept:"Transport", des:"Forklift Driver" },
+      { id:"20439", name:"Md. Juwel Rana", dept:"Transport", des:"Forklift Driver" },
+      { id:"220110", name:"Abu Hanif", dept:"Transport", des:"Helper" },
+      { id:"220116", name:"Prince Mahmud", dept:"Transport", des:"Driver" },
+      { id:"220120", name:"Md. Rahat Hossain", dept:"Transport", des:"Helper" },
+      { id:"220129", name:"Md. Foridul Islam", dept:"Transport", des:"Helper" },
+      { id:"220130", name:"Riyad Shekh", dept:"Transport", des:"Helper" },
+      { id:"220138", name:"Md. Ariful Islam Sumon", dept:"Transport", des:"Driver" },
+      { id:"220142", name:"Md. Al-Amin", dept:"Transport", des:"Forklift Driver" },
+      { id:"220143", name:"Md. Arshad Matubbar", dept:"Transport", des:"Helper" },
+      { id:"220144", name:"Md. Safiqul Islam", dept:"Transport", des:"Driver" },
+      { id:"220145", name:"Md. Firoz Mia", dept:"Transport", des:"Driver" },
+      { id:"220147", name:"Md. Shamim", dept:"Transport", des:"Driver" },
+      { id:"220149", name:"Mohammad Jihad Hasan", dept:"Transport", des:"Helper" },
+      { id:"220150", name:"Raju Ahammed", dept:"Transport", des:"Helper" },
+      { id:"220151", name:"Md. Josim Shadir", dept:"Transport", des:"Driver" },
+      { id:"220152", name:"Md. Mostofa", dept:"Transport", des:"Helper" },
+      { id:"220153", name:"Azharul Islam", dept:"Transport", des:"Driver" },
+      { id:"220154", name:"Md. Mahabub", dept:"Transport", des:"Helper" },
 
-/* ===============================
-   SHEATHING
-================================ */
-{ id:"21601", name:"Md. Miraz Uddin", dept:"Sheathing", des:"Sr.Operator" },
-{ id:"21604", name:"Mohammad Enamul Hoque", dept:"Sheathing", des:"Sr.Operator" },
-{ id:"21613", name:"Md. Polash Mia (Farhad)", dept:"Sheathing", des:"Jr.Operator" },
-{ id:"21617", name:"Md. Anisur Haque", dept:"Sheathing", des:"Sr.Helper" },
-{ id:"21622", name:"Halim", dept:"Sheathing", des:"Sr.Operator" },
-{ id:"21623", name:"Md. Shahajahan", dept:"Sheathing", des:"Sr.Helper" },
-{ id:"21626", name:"Sumon Islam", dept:"Sheathing", des:"Jr.Operator" },
-{ id:"22306", name:"Md. Rakibul Hossen Repon", dept:"Sheathing", des:"Sr.Helper" },
-{ id:"21641", name:"Md. Shimul Mia", dept:"Sheathing", des:"Helper" },
-{ id:"21643", name:"Md. Kawsar Hossain", dept:"Sheathing", des:"Helper" },
-{ id:"21644", name:"Md. Jonayet Mia", dept:"Sheathing", des:"Helper" },
-{ id:"21655", name:"Sharuf Mirdha", dept:"Sheathing", des:"Helper" },
-{ id:"21658", name:"Md. Shafiqul Alam Himel", dept:"Sheathing", des:"Helper" },
-{ id:"21660", name:"SK Md. Salman Arefeen", dept:"Sheathing", des:"Helper" },
-{ id:"21662", name:"Anonto Dash", dept:"Sheathing", des:"Helper" },
-{ id:"21665", name:"Sifat Ahmed", dept:"Sheathing", des:"Helper" },
-{ id:"21666", name:"Md. Shaon Islam", dept:"Sheathing", des:"Helper" },
-{ id:"21667", name:"Ajmir Hasan", dept:"Sheathing", des:"Helper" },
-{ id:"21668", name:"Abu Hena Md. Nayem", dept:"Sheathing", des:"Helper" },
-{ id:"21670", name:"Subroto Roy Choyon", dept:"Sheathing", des:"Helper" },
-{ id:"21671", name:"Md. Anamul Hossain", dept:"Sheathing", des:"Helper" },
-{ id:"21672", name:"Nayon Molla", dept:"Sheathing", des:"Helper" },
-/* ===============================
-   TRANSPORT
-================================ */
-{ id:"22020", name:"Md. Babul Bepari -2", dept:"Transport", des:"Driver" },
-{ id:"22041", name:"Md. Ariful", dept:"Transport", des:"Driver" },
-{ id:"22056", name:"Md. Jamir Hosen", dept:"Transport", des:"Helper" },
-{ id:"22058", name:"Md. Shahin Sarkar-2", dept:"Transport", des:"Driver" },
-{ id:"22070", name:"Md. Bappi", dept:"Transport", des:"Driver" },
-{ id:"22071", name:"Md. Farid Mia", dept:"Transport", des:"Driver" },
-{ id:"22074", name:"Md. Zahirul Islam", dept:"Transport", des:"Helper" },
-{ id:"21631", name:"Md. Nazmul Hossain", dept:"Transport", des:"Driver" },
-{ id:"22078", name:"Md. Foysal", dept:"Transport", des:"Driver" },
-{ id:"22079", name:"Md. Iqbal Hosen", dept:"Transport", des:"Driver" },
-{ id:"22080", name:"Rajib Sheikh", dept:"Transport", des:"Driver" },
-{ id:"22081", name:"Md. Jasim Uddin", dept:"Transport", des:"Helper" },
-{ id:"20822", name:"Sree Jony Chandra Paul", dept:"Transport", des:"Motor Machanic" },
-{ id:"20431", name:"Md. Jashim", dept:"Transport", des:"Forklift Driver" },
-{ id:"20439", name:"Md. Juwel Rana", dept:"Transport", des:"Forklift Driver" },
-{ id:"220110", name:"Abu Hanif", dept:"Transport", des:"Helper" },
-{ id:"220116", name:"Prince Mahmud", dept:"Transport", des:"Driver" },
-{ id:"220120", name:"Md. Rahat Hossain", dept:"Transport", des:"Helper" },
-{ id:"220129", name:"Md. Foridul Islam", dept:"Transport", des:"Helper" },
-{ id:"220130", name:"Riyad Shekh", dept:"Transport", des:"Helper" },
-{ id:"220138", name:"Md. Ariful Islam Sumon", dept:"Transport", des:"Driver" },
-{ id:"220142", name:"Md. Al-Amin", dept:"Transport", des:"Forklift Driver" },
-{ id:"220143", name:"Md. Arshad Matubbar", dept:"Transport", des:"Helper" },
-{ id:"220144", name:"Md. Safiqul Islam", dept:"Transport", des:"Driver" },
-{ id:"220145", name:"Md. Firoz Mia", dept:"Transport", des:"Driver" },
-{ id:"220147", name:"Md. Shamim", dept:"Transport", des:"Driver" },
-{ id:"220149", name:"Mohammad Jihad Hasan", dept:"Transport", des:"Helper" },
-{ id:"220150", name:"Raju Ahammed", dept:"Transport", des:"Helper" },
-{ id:"220151", name:"Md. Josim Shadir", dept:"Transport", des:"Driver" },
-{ id:"220152", name:"Md. Mostofa", dept:"Transport", des:"Helper" },
-{ id:"220153", name:"Azharul Islam", dept:"Transport", des:"Driver" },
-{ id:"220154", name:"Md. Mahabub", dept:"Transport", des:"Helper" },
+      /* ===============================
+         UPCAST
+      ============================== */
+      { id:"21714", name:"Md. Sakibul", dept:"Upcast", des:"Sr.Helper" },
+      { id:"21718", name:"Md. Dablu", dept:"Upcast", des:"Skill Helper" },
+      { id:"21719", name:"Al Amin", dept:"Upcast", des:"Sr.Helper" },
+      { id:"21722", name:"Md. Tajul Islam", dept:"Upcast", des:"Jr.Operator" },
+      { id:"21725", name:"Md. Younus Mia", dept:"Upcast", des:"Sr.Helper" },
+      { id:"21726", name:"Md. Alamgir Hossen", dept:"Upcast", des:"Helper" },
+      { id:"21728", name:"Abdur Rahim", dept:"Upcast", des:"Sr.Helper" },
+      { id:"21731", name:"Sree Porimol Chandra Barmon", dept:"Upcast", des:"Helper" },
+      { id:"21736", name:"Md. Motiyar Rahman", dept:"Upcast", des:"Helper" },
+      { id:"21737", name:"Sree Folbabu Kumar", dept:"Upcast", des:"Jr.Operator" },
+      { id:"21743", name:"Alamgir Hossain", dept:"Upcast", des:"Helper" },
+      { id:"22302", name:"Md. Mobarak Hossen", dept:"Upcast", des:"Helper" },
+      { id:"21745", name:"Sree Ronjet Paul", dept:"Upcast", des:"Helper" },
+      { id:"21746", name:"Loknath Biswas", dept:"Upcast", des:"Helper" },
+      { id:"21747", name:"Md. Saju", dept:"Upcast", des:"Helper" },
+      { id:"21757", name:"Manik Paul", dept:"Upcast", des:"Helper" },
+      { id:"21759", name:"Md. Raton Mia", dept:"Upcast", des:"Helper" },
+      { id:"21735", name:"Md. Ibrahim Hossain", dept:"Upcast", des:"Jr.Operator" },
+      { id:"21760", name:"Md. Akash", dept:"Upcast", des:"Helper" },
+      { id:"21763", name:"Gouranga Mondol", dept:"Upcast", des:"Helper" },
+      { id:"21764", name:"Md. Moktar Hosen", dept:"Upcast", des:"Helper" },
+      { id:"21767", name:"Md. Rubel Munshi", dept:"Upcast", des:"Semi Operator" },
+      { id:"21769", name:"Md. Gazi Kabirul Kabir", dept:"Upcast", des:"Jr.Operator" },
+      { id:"21198", name:"Md. Imon Mia", dept:"Upcast", des:"Helper" },
+      { id:"21770", name:"Md. Rayhan Mia", dept:"Upcast", des:"Helper" },
 
-/* ===============================
-   UPCAST
-================================ */
-{ id:"21714", name:"Md. Sakibul", dept:"Upcast", des:"Sr.Helper" },
-{ id:"21718", name:"Md. Dablu", dept:"Upcast", des:"Skill Helper" },
-{ id:"21719", name:"Al Amin", dept:"Upcast", des:"Sr.Helper" },
-{ id:"21722", name:"Md. Tajul Islam", dept:"Upcast", des:"Jr.Operator" },
-{ id:"21725", name:"Md. Younus Mia", dept:"Upcast", des:"Sr.Helper" },
-{ id:"21726", name:"Md. Alamgir Hossen", dept:"Upcast", des:"Helper" },
-{ id:"21728", name:"Abdur Rahim", dept:"Upcast", des:"Sr.Helper" },
-{ id:"21731", name:"Sree Porimol Chandra Barmon", dept:"Upcast", des:"Helper" },
-{ id:"21736", name:"Md. Motiyar Rahman", dept:"Upcast", des:"Helper" },
-{ id:"21737", name:"Shree Folbabu Kumar", dept:"Upcast", des:"Jr.Operator" },
-{ id:"21743", name:"Alamgir Hossain", dept:"Upcast", des:"Helper" },
-{ id:"22302", name:"Md. Mobarak Hossen", dept:"Upcast", des:"Helper" },
-{ id:"21745", name:"Sree Ronjet Paul", dept:"Upcast", des:"Helper" },
-{ id:"21746", name:"Loknath Biswas", dept:"Upcast", des:"Helper" },
-{ id:"21747", name:"Md. Saju", dept:"Upcast", des:"Helper" },
-{ id:"21757", name:"Manik Paul", dept:"Upcast", des:"Helper" },
-{ id:"21759", name:"Md. Raton Mia", dept:"Upcast", des:"Helper" },
-{ id:"21735", name:"Md. Ibrahim Hossain", dept:"Upcast", des:"Jr.Operator" },
-{ id:"21760", name:"Md. Akash", dept:"Upcast", des:"Helper" },
-{ id:"21763", name:"Gouranga Mondol", dept:"Upcast", des:"Helper" },
-{ id:"21764", name:"Md. Moktar Hosen", dept:"Upcast", des:"Helper" },
-{ id:"21767", name:"Md. Rubel Munshi", dept:"Upcast", des:"Semi Operator" },
-{ id:"21769", name:"Md. Gazi Kabirul Kabir", dept:"Upcast", des:"Jr.Operator" },
-{ id:"21198", name:"Md. Imon Mia", dept:"Upcast", des:"Helper" },
-{ id:"21770", name:"Md. Rayhan Mia", dept:"Upcast", des:"Helper" },
-/* ===============================
-   TECHL-CELL
-================================ */
-{ id:"20304", name:"Md. Tuhin Miah", dept:"Techl-Cell", des:"Sr.Executive" },
-{ id:"20305", name:"Rakib Hasan", dept:"Techl-Cell", des:"Sr.Executive" },
-{ id:"20306", name:"Md. Morshed Nasir", dept:"Techl-Cell", des:"Sr.Executive" },
-{ id:"20310", name:"Rubel Chakma", dept:"Techl-Cell", des:"Executive" },
-{ id:"20311", name:"Robi Jyoti Chakma", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
-{ id:"20313", name:"Md. Ariful Islam", dept:"Techl-Cell", des:"Asstt. Manager" },
-{ id:"20316", name:"Md. Noyan Shekh", dept:"Techl-Cell", des:"Executive" },
-{ id:"20325", name:"Md. Shoruar Jahan", dept:"Techl-Cell", des:"Executive" },
-{ id:"20326", name:"Md. Helal Uddin", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
-{ id:"20331", name:"Hridoy Sardar", dept:"Techl-Cell", des:"Executive" },
-{ id:"20338", name:"Mehedi Hassan (Shanto)", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20339", name:"Md. Mottakin Billah", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20340", name:"Md. Ashraful Islam", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20346", name:"Md. Saidur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20348", name:"Md. Maksodur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20356", name:"Md. Bappy Howlader", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20494", name:"Md. Al Amin Hossain", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20360", name:"Kamrojaman Ovi", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20362", name:"Palash", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20363", name:"Md. Naeem", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20364", name:"Md. Jihad Khandokar", dept:"Techl-Cell", des:"Lab.Assistant" },
-{ id:"20365", name:"Kawsar Ahmed", dept:"Techl-Cell", des:"Lab.Assistant" },
+      /* ===============================
+         TECHL-CELL
+      ============================== */
+      { id:"20304", name:"Md. Tuhin Miah", dept:"Techl-Cell", des:"Sr.Executive" },
+      { id:"20305", name:"Rakib Hasan", dept:"Techl-Cell", des:"Sr.Executive" },
+      { id:"20306", name:"Md. Morshed Nasir", dept:"Techl-Cell", des:"Sr.Executive" },
+      { id:"20310", name:"Rubel Chakma", dept:"Techl-Cell", des:"Executive" },
+      { id:"20311", name:"Robi Jyoti Chakma", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
+      { id:"20313", name:"Md. Ariful Islam", dept:"Techl-Cell", des:"Asstt. Manager" },
+      { id:"20316", name:"Md. Noyan Shekh", dept:"Techl-Cell", des:"Executive" },
+      { id:"20325", name:"Md. Shoruar Jahan", dept:"Techl-Cell", des:"Executive" },
+      { id:"20326", name:"Md. Helal Uddin", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
+      { id:"20331", name:"Hridoy Sardar", dept:"Techl-Cell", des:"Executive" },
+      { id:"20338", name:"Mehedi Hassan (Shanto)", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20339", name:"Md. Mottakin Billah", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20340", name:"Md. Ashraful Islam", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20346", name:"Md. Saidur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20348", name:"Md. Maksodur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20356", name:"Md. Bappy Howlader", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20494", name:"Md. Al Amin Hossain", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20360", name:"Kamrojaman Ovi", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20362", name:"Palash", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20363", name:"Md. Naeem", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20364", name:"Md. Jihad Khandokar", dept:"Techl-Cell", des:"Lab.Assistant" },
+      { id:"20365", name:"Kawsar Ahmed", dept:"Techl-Cell", des:"Lab.Assistant" },
 
-/* ===============================
-   WIRE DRAWING
-================================ */
-{ id:"21401", name:"Md. Washim Uddin", dept:"Wire Drawing", des:"Sr.Operator" },
-{ id:"21402", name:"Krishna Biswas (Trinath)", dept:"Wire Drawing", des:"Sr.Operator" },
-{ id:"21403", name:"Md. Sumon", dept:"Wire Drawing", des:"Sr.Operator" },
-{ id:"21404", name:"Md. Nur Alom", dept:"Wire Drawing", des:"Operator" },
-{ id:"21405", name:"Md. Abdur Razzak Mia", dept:"Wire Drawing", des:"Operator" },
-{ id:"21412", name:"Md. Uzzal Mia", dept:"Wire Drawing", des:"Jr.Operator" },
-{ id:"21414", name:"Md. Jamal Uddin", dept:"Wire Drawing", des:"Skill Helper" },
-{ id:"21416", name:"Md. Sirazul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
-{ id:"21417", name:"Md. Asadul Hoque", dept:"Wire Drawing", des:"Skill Helper" },
-{ id:"21419", name:"Md. Mominul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
-{ id:"21420", name:"Md. Rayhan", dept:"Wire Drawing", des:"Jr.Operator" },
-{ id:"22151", name:"Md. Apel Mia (Latif Sarker)", dept:"Wire Drawing", des:"Skill Helper" },
-{ id:"21433", name:"Md. Naim Molla", dept:"Wire Drawing", des:"Sr.Helper" },
-{ id:"21436", name:"Md. Sayful Islam", dept:"Wire Drawing", des:"Sr.Helper" },
-{ id:"21457", name:"Md. Monjur Talukder", dept:"Wire Drawing", des:"Helper" },
-{ id:"21460", name:"Gowtom Chandra Bormon", dept:"Wire Drawing", des:"Helper" },
-{ id:"21467", name:"Md. Sohel", dept:"Wire Drawing", des:"Helper" },
-{ id:"21468", name:"Md. Sagor Badsha", dept:"Wire Drawing", des:"Helper" },
-{ id:"211106", name:"Munsi Golam Mortuja", dept:"Wire Drawing", des:"Helper" },
-{ id:"21474", name:"Md. Sakib", dept:"Wire Drawing", des:"Helper" },
-{ id:"21477", name:"Md. Ashraful", dept:"Wire Drawing", des:"Helper" },
-{ id:"21478", name:"Md. Abdul Majed", dept:"Wire Drawing", des:"Helper" },
-{ id:"21480", name:"Md. Akash Hossain Srabon", dept:"Wire Drawing", des:"Helper" },
-{ id:"21481", name:"Md. Mantajul Islam", dept:"Wire Drawing", des:"Helper" },
-{ id:"21482", name:"Md. Robiul Islam", dept:"Wire Drawing", des:"Helper" },
-{ id:"21483", name:"Forhat Hossain", dept:"Wire Drawing", des:"Helper" }
-  
-];
+      /* ===============================
+         WIRE DRAWING
+      ============================== */
+      { id:"21401", name:"Md. Washim Uddin", dept:"Wire Drawing", des:"Sr.Operator" },
+      { id:"21402", name:"Krishna Biswas (Trinath)", dept:"Wire Drawing", des:"Sr.Operator" },
+      { id:"21403", name:"Md. Sumon", dept:"Wire Drawing", des:"Sr.Operator" },
+      { id:"21404", name:"Md. Nur Alom", dept:"Wire Drawing", des:"Operator" },
+      { id:"21405", name:"Md. Abdur Razzak Mia", dept:"Wire Drawing", des:"Operator" },
+      { id:"21412", name:"Md. Uzzal Mia", dept:"Wire Drawing", des:"Jr.Operator" },
+      { id:"21414", name:"Md. Jamal Uddin", dept:"Wire Drawing", des:"Skill Helper" },
+      { id:"21416", name:"Md. Sirazul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
+      { id:"21417", name:"Md. Asadul Hoque", dept:"Wire Drawing", des:"Skill Helper" },
+      { id:"21419", name:"Md. Mominul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
+      { id:"21420", name:"Md. Rayhan", dept:"Wire Drawing", des:"Jr.Operator" },
+      { id:"22151", name:"Md. Apel Mia (Latif Sarker)", dept:"Wire Drawing", des:"Skill Helper" },
+      { id:"21433", name:"Md. Naim Molla", dept:"Wire Drawing", des:"Sr.Helper" },
+      { id:"21436", name:"Md. Sayful Islam", dept:"Wire Drawing", des:"Sr.Helper" },
+      { id:"21457", name:"Md. Monjur Talukder", dept:"Wire Drawing", des:"Helper" },
+      { id:"21460", name:"Gowtom Chandra Bormon", dept:"Wire Drawing", des:"Helper" },
+      { id:"21467", name:"Md. Sohel", dept:"Wire Drawing", des:"Helper" },
+      { id:"21468", name:"Md. Sagor Badsha", dept:"Wire Drawing", des:"Helper" },
+      { id:"211106", name:"Munsi Golam Mortuja", dept:"Wire Drawing", des:"Helper" },
+      { id:"21474", name:"Md. Sakib", dept:"Wire Drawing", des:"Helper" },
+      { id:"21477", name:"Md. Ashraful", dept:"Wire Drawing", des:"Helper" },
+      { id:"21478", name:"Md. Abdul Majed", dept:"Wire Drawing", des:"Helper" },
+      { id:"21480", name:"Md. Akash Hossain Srabon", dept:"Wire Drawing", des:"Helper" },
+      { id:"21481", name:"Md. Mantajul Islam", dept:"Wire Drawing", des:"Helper" },
+      { id:"21482", name:"Md. Robiul Islam", dept:"Wire Drawing", des:"Helper" },
+      { id:"21483", name:"Forhat Hossain", dept:"Wire Drawing", des:"Helper" }
+      ];
 
+      // ===== STATE =====
+      let reg = JSON.parse(localStorage.getItem("sportsReg")||"[]");
+      let currentMode = 'ind';
+      let currentEmp = null;
 
-/* ===============================
-   DATA
-================================ */
-let registrations = JSON.parse(localStorage.getItem("sportsReg") || "[]");
-let selectedEmp = null;
+      // ===== COUNTDOWN =====
+      function startCountdown() {
+        const targetDate = new Date("Jan 15, 2025 00:00:00").getTime();
+        const timer = setInterval(() => {
+          const now = new Date().getTime();
+          const diff = targetDate - now;
 
-/* ===============================
-   UI LOGIC
-================================ */
-function showTab(tab){
-  manpowerTab.style.display = tab==="manpower"?"block":"none";
-  sportsTab.style.display = tab==="sports"?"block":"none";
-}
+          if (diff < 0) {
+            document.getElementById('countdownTimer').innerHTML = "HAPPY PICNIC DAY!";
+            document.getElementById('countdownTimer2').innerHTML = "HAPPY PICNIC DAY!";
+            clearInterval(timer);
+          } else {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            // Format: 9 days 10 hours 10 min
+            const formatted = `${days} days ${hours} hours ${minutes} min`;
+            document.getElementById('countdownTimer').innerHTML = formatted;
+            document.getElementById('countdownTimer2').innerHTML = formatted;
+          }
+        }, 1000);
+      }
 
-/* ===============================
-   SEARCH
-================================ */
-function searchEmp(){
-  const id = searchId.value.trim();
-  selectedEmp = manpower.find(m=>m.id===id);
-  if(!selectedEmp){alert("Employee Not Found");return}
-  empInfo.innerHTML = `
-    <b>${selectedEmp.name}</b><br>
-    ${selectedEmp.dept}<br>
-    ${selectedEmp.desig}
-  `;
-  modal.style.display="block";
-}
+      // ===== NAVIGATION =====
+      function switchSection(id) {
+        document.getElementById('view-manpower').style.display = id === 'manpower' ? 'block' : 'none';
+        document.getElementById('view-sports').style.display = id === 'sports' ? 'block' : 'none';
+        
+        document.getElementById('nav-manpower').classList.toggle('active', id === 'manpower');
+        document.getElementById('nav-sports').classList.toggle('active', id === 'sports');
+        
+        // Mobile: Close sidebar on switch
+        document.getElementById('sidebar').classList.remove('open');
+        
+        if(id === 'sports') { refreshAll(); }
+      }
 
-/* ===============================
-   REGISTER
-================================ */
-function register(){
-  const sport = sportSelect.value;
-  if(!sport){alert("Select Sport");return}
-  if(registrations.find(r=>r.id===selectedEmp.id)){
-    alert("Already Registered");return;
-  }
-  registrations.push({...selectedEmp,sport});
-  save();
-  closeModal();
-}
+      function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+      }
 
-/* ===============================
-   BULK REGISTER (STRUCTURE READY)
-================================ */
-function bulkRegister(){
-  alert("Bulk registration logic ready – manpower add করলে কাজ করবে");
-}
+      // ===== MODE LOGIC =====
+      function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('btnInd').classList.toggle('active', mode === 'ind');
+        document.getElementById('btnBulk').classList.toggle('active', mode === 'bulk');
+        document.getElementById('viewInd').style.display = mode === 'ind' ? 'block' : 'none';
+        document.getElementById('viewBulk').style.display = mode === 'bulk' ? 'block' : 'none';
 
-/* ===============================
-   SAVE & RENDER
-================================ */
-function save(){
-  localStorage.setItem("sportsReg",JSON.stringify(registrations));
-  render();
-}
+        if(mode === 'bulk' && document.getElementById('bulkDept').options.length <= 1) {
+          populateDepts();
+        }
+      }
 
-function render(){
-  totalMp.innerText = manpower.length;
-  totalReg.innerText = registrations.length;
-  leftMp.innerText = manpower.length - registrations.length;
+      function populateDepts() {
+        const depts = [...new Set(manpower.map(e => e.dept))].sort();
+        const select = document.getElementById('bulkDept');
+        select.innerHTML = '<option value="">-- Select Department --</option>';
+        depts.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.innerText = d;
+          select.appendChild(opt);
+        });
+      }
 
-  let html = `<table><tr><th>ID</th><th>Name</th><th>Dept</th><th>Sport</th><th>Action</th></tr>`;
-  registrations.forEach((r,i)=>{
-    html += `<tr>
-      <td>${r.id}</td><td>${r.name}</td><td>${r.dept}</td><td>${r.sport}</td>
-      <td><button onclick="del(${i})">Delete</button></td>
-    </tr>`;
-  });
-  html += `</table>`;
-  sportsTable.innerHTML = html;
+      // ===== SEARCH LOGIC =====
+      function initSearch() {
+        const select = document.getElementById('empSearch');
+        manpower.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.id;
+          opt.innerText = `${e.id} - ${e.name}`;
+          select.appendChild(opt);
+        });
+      }
 
-  // Department dropdown
-  const depts=[...new Set(manpower.map(m=>m.dept))];
-  deptSelect.innerHTML = `<option value="">Select Department</option>`;
-  depts.forEach(d=>deptSelect.innerHTML+=`<option>${d}</option>`);
-}
+      function onSearchChange() {
+        const id = document.getElementById('empSearch').value;
+        const emp = manpower.find(e => e.id == id);
+        const infoDiv = document.getElementById('empInfo');
+        const displayDiv = document.getElementById('empDisplay');
 
-function del(i){
-  if(confirm("Delete?")){
-    registrations.splice(i,1);
-    save();
-  }
-}
+        if(emp) {
+          const existing = reg.find(r => r.id == emp.id);
+          if(existing) {
+            infoDiv.innerHTML = `<span style="color:#16a34a; font-weight:bold;">${emp.name}</span> is already registered in <span style="color:#b91c1c;">${existing.sport}</span>`;
+            displayDiv.style.display = 'none';
+          } else {
+            infoDiv.innerHTML = `<b>${emp.name}</b><br>${emp.dept}<br>${emp.des}`;
+            displayDiv.style.display = 'block';
+            currentEmp = emp;
+          }
+        } else {
+          infoDiv.innerHTML = "Select Employee";
+          displayDiv.style.display = 'none';
+          currentEmp = null;
+        }
+      }
 
-function closeModal(){modal.style.display="none"}
+      function confirmSearch() {
+        if(!currentEmp) { openModal("Info", "Select an employee first", "error"); return; }
+        document.getElementById('empDisplay').style.display = 'block';
+      }
 
-function downloadPDF(){
-  const {jsPDF}=window.jspdf;
-  const pdf=new jsPDF();
-  let y=10;
-  registrations.forEach(r=>{
-    pdf.text(`${r.id} ${r.name} - ${r.sport}`,10,y);
-    y+=8;
-  });
-  pdf.save("Sports_List.pdf");
-}
+      function resetSearch() {
+        document.getElementById('empSearch').value = "";
+        document.getElementById('empDisplay').style.display = 'none';
+        currentEmp = null;
+      }
 
-render();
-</script>
+      // ===== REGISTER LOGIC =====
+      function submitIndividual() {
+        const sport = document.getElementById('regSport').value;
+        if(!sport) { openModal("Info", "Select Sport", "error"); return; }
 
-</body>
+        reg.push({...currentEmp, sport:sport, timestamp:Date.now()});
+        localStorage.setItem("sportsReg", JSON.stringify(reg));
+        openModal("Success", "Registration Successful", "success");
+        resetSearch();
+        refreshAll();
+        showAnimation(sport);
+      }
+
+      // ===== BULK LOGIC =====
+      function renderBulk() {
+        const dept = document.getElementById('bulkDept').value;
+        const tbody = document.getElementById('bulkBody');
+        tbody.innerHTML = '';
+        document.getElementById('bulkAll').checked = false;
+
+        if(!dept) return;
+
+        const deptEmps = manpower.filter(e => e.dept == dept);
+        if(deptEmps.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4">No employees found</td></tr>';
+          return;
+        }
+
+        deptEmps.forEach(e => {
+          const existing = reg.find(r => r.id == e.id);
+          const disabled = existing ? 'disabled' : '';
+          const checked = !existing ? 'checked' : '';
+          
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="checkbox-cell"><input type="checkbox" class="bulk-cb" value="${e.id}" ${disabled} ${checked}></td>
+            <td>${e.id}</td>
+            <td>${e.name}</td>
+            <td>${e.des}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function toggleBulkAll() {
+        const master = document.getElementById('bulkAll');
+        document.querySelectorAll('.bulk-cb').forEach(cb => {
+          if(!cb.disabled) cb.checked = master.checked;
+        });
+      }
+
+      function submitBulk() {
+        const sport = document.getElementById('bulkSport').value;
+        const boxes = document.querySelectorAll('.bulk-cb:checked');
+        
+        if(!sport) { openModal("Info", "Select Sport", "error"); return; }
+        if(boxes.length === 0) { openModal("Info", "Select Employees", "error"); return; }
+
+        openModal("Confirm", `Register ${boxes.length} employees to ${sport}?`, "confirm", () => {
+          let count = 0;
+          boxes.forEach(cb => {
+            const emp = manpower.find(e => e.id == cb.value);
+            if(!reg.find(r => r.id == emp.id)) {
+              reg.push({...emp, sport:sport, timestamp:Date.now()});
+              count++;
+            }
+          });
+          
+          localStorage.setItem("sportsReg", JSON.stringify(reg));
+          setTimeout(() => {
+            openModal("Success", `Processed ${boxes.length} employees.`, "success");
+            refreshAll();
+            if(count > 0) showAnimation(sport);
+          }, 500);
+        });
+      }
+
+      // ===== RENDER/REFRESH LOGIC =====
+      function refreshAll() {
+        // Stats
+        document.getElementById('tm').innerText = manpower.length;
+        document.getElementById('pt').innerText = reg.length;
+        document.getElementById('lf').innerText = manpower.length - reg.length;
+
+        // Dashboard
+        const sports = ["Tug Of War", "Pot Breaking", "Sack Race", "Basket Toss", "Musical Chair"];
+        let dashHtml = "";
+        sports.forEach(s => {
+          const count = reg.filter(r => r.sport == s).length;
+          const zeroClass = count == 0 ? "sport-badge-count zero" : "sport-badge-count";
+          dashHtml += `<div class="sport-card"><div class="sport-title">${s}</div><div class="${zeroClass}">${count}</div></div>`;
+        });
+        document.getElementById('sportSummary').innerHTML = dashHtml;
+
+        // Table
+        const filter = document.getElementById('sportFilter').value;
+        const sportsToRender = filter == "All" ? sports : [filter];
+        
+        let tableHtml = "";
+        sportsToRender.forEach(s => {
+          const list = reg.filter(r => r.sport == s);
+          if(list.length > 0 || filter != "All") {
+            tableHtml += `<div class="section-subtitle">${s} <span>${list.length}</span></div>`;
+            tableHtml += `<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>Desig</th><th>Action</th></tr></thead>`;
+            list.forEach(r => {
+              tableHtml += `<tr><td>${r.id}</td><td>${r.name}</td><td>${r.dept}</td><td>${r.des}</td><td><button class="btn btn-sm btn-danger" onclick="del(${r.timestamp})">Delete</button></td></tr>`;
+            });
+            tableHtml += `</table></div>`;
+          }
+        });
+        document.getElementById('sportTable').innerHTML = tableHtml || '<div style="padding:20px; text-align:center;">No data.</div>';
+      }
+
+      // ===== DELETE LOGIC =====
+      function del(ts) {
+        openModal("Confirm", "Delete this entry?", "confirm", () => {
+          reg = reg.filter(r => r.timestamp != ts);
+          localStorage.setItem("sportsReg", JSON.stringify(reg));
+          refreshAll();
+        });
+      }
+
+      function deleteAll() {
+        openModal("Confirm", "Delete ALL data?", "confirm", () => {
+          reg = [];
+          localStorage.removeItem("sportsReg");
+          refreshAll();
+        });
+      }
+
+      // ===== PDF LOGIC =====
+      function downloadPDF() {
+        if(reg.length == 0) { openModal("Info", "No Data", "warning"); return; }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Bangla Font Support (Placeholder)
+        // To render Bangla text in PDF, you MUST add a Base64 font.
+        // Example: doc.addFont("MyFont", "MyFont", "normal");
+        
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.text("RR IMPERIAL ELECTRICALS LTD.", 105, 20, { align: "center" }); 
+        
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "normal");
+        doc.text("Sports Register List", 105, 30, { align: "center" });
+
+        let y = 40;
+        const sports = [...new Set(reg.map(r => r.sport))];
+        
+        sports.forEach(s => {
+          const list = reg.filter(r => r.sport == s);
+          if(list.length > 0) {
+            if(y > 240) { doc.addPage(); y = 20; }
+            doc.setFont("helvetica", "bold");
+            doc.text(`${s} (${list.length})`, 14, y); y+=8;
+            
+            const body = list.map(r => [r.id, r.name, r.dept, r.des]);
+            doc.autoTable({ startY: y, head: ['ID', 'Name', 'Dept', 'Desig'], body: body, theme: 'grid', styles: {fontSize:10} });
+            y = doc.lastAutoTable.finalY + 10;
+          }
+        });
+        
+        doc.save('Sports_List.pdf');
+      }
+
+      // ===== ANIMATION & MODAL HELPERS =====
+      function openModal(type, msg, action, callback) {
+        const overlay = document.querySelector('.modal-overlay.active');
+        if(overlay) overlay.classList.remove('active'); // Close previous if open
+
+        const el = document.getElementById('sportAnimOverlay');
+        const m = document.getElementById('modal');
+        
+        el.style.display = 'none';
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('modal').className = type; // success, error, confirm
+        document.getElementById('modal').querySelector('h3').innerText = type;
+        document.getElementById('modal').querySelector('p').innerHTML = msg;
+
+        // Buttons
+        const btnContainer = document.getElementById('modal').querySelector('.modal-actions');
+        if(action === 'confirm') {
+           const confirmBtn = document.createElement('button');
+           confirmBtn.className = 'btn btn-primary';
+           confirmBtn.innerText = 'Yes';
+           confirmBtn.onclick = () => {
+             document.getElementById('modal').style.display = 'none';
+             if(callback) callback();
+           };
+           
+           const cancelBtn = document.createElement('button');
+           cancelBtn.className = 'btn btn-secondary';
+           cancelBtn.innerText = 'Cancel';
+           cancelBtn.onclick = () => document.getElementById('modal').style.display = 'none';
+
+           btnContainer.innerHTML = '';
+           btnContainer.appendChild(confirmBtn);
+           btnContainer.appendChild(cancelBtn);
+        } else {
+           const okBtn = document.createElement('button');
+           okBtn.className = 'btn btn-primary';
+           okBtn.innerText = 'OK';
+           okBtn.onclick = () => {
+             document.getElementById('modal').style.display = 'none';
+           };
+           btnContainer.innerHTML = '';
+           btnContainer.appendChild(okBtn);
+        }
+      }
+
+      function showAnimation(sport) {
+        const el = document.getElementById('sportAnimOverlay');
+        const icon = document.getElementById('animIcon');
+        let char = "✅";
+        let color = "#16a34a"; // Green
+
+        if(sport.includes('Tug')) { char = "⛹"; color = "#2563eb"; } // Blue
+        else if(sport.includes('Pot')) { char = "💣"; color = "#dc2626"; } // Red
+        else if(sport.includes('Sack')) { char = "⛷"; color = "#d97706"; } // Orange
+        else if(sport.includes('Basket')) { char = "🗑"; color = "#b91c1c"; } // Red
+        else if(sport.includes('Chair')) { char = "🪑"; color = "#9333ea"; } // Purple
+
+        icon.innerText = char;
+        icon.style.color = color;
+        
+        el.classList.add('active');
+        setTimeout(() => { el.classList.remove('active'); }, 1500);
+      }
+
+      // ===== INIT =====
+      window.onload = function() {
+        initSearch();
+        populateDepts();
+        startCountdown();
+        refreshAll();
+      };
+    </script>
+  </body>
 </html>
