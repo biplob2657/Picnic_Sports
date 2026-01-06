@@ -146,9 +146,445 @@ th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
 <script>
 // ===== AUTO INJECT MANPOWER (Demo sample, full list can be injected same way) =====
 const manpower = [
- {id:"20110",name:"Krishibid Sadeque ibn Shams",dept:"Administration",des:"Chief Co-Ordinator"},
- {id:"20103",name:"Mohammad Sharif Ahmed",dept:"Operation",des:"Factory Manager"},
- {id:"20801",name:"Subhasis Bakul Chandra Ghosh",dept:"Maintenance",des:"Manager"},
+/* ===============================
+   ADMINISTRATION
+================================ */
+{ id:"20110", name:"Krishibid Sadeque ibn Shams", dept:"Administration", des:"Chief Co-Ordinator" },
+{ id:"20104", name:"S M Anamul Haque", dept:"Administration", des:"Executive" },
+{ id:"20113", name:"Md. Hamim Hossen", dept:"Administration", des:"Office Assistant" },
+
+/* ===============================
+   HR & ADMIN
+================================ */
+{ id:"20108", name:"Mohammad Alamgir Hossain", dept:"HR & Admin", des:"Asstt. Manager" },
+
+/* ===============================
+   ACCOUNTS
+================================ */
+{ id:"20107", name:"Md. Mostafizur Rahman", dept:"Accounts", des:"Dpt. Manager" },
+{ id:"20112", name:"Mohammad Forkan", dept:"Accounts", des:"Executive" },
+
+/* ===============================
+   IT
+================================ */
+{ id:"20704", name:"Md. Mahfuzar Rahman Sumon", dept:"IT", des:"Executive" },
+{ id:"20707", name:"Md. Abdul Kader Jelany", dept:"IT", des:"Jr.Executive" },
+/* ===============================
+   OPERATION
+================================ */
+{ id:"20103", name:"Mohammad Sharif Ahmed", dept:"Operation", des:"Factory Manager" },
+{ id:"20501", name:"Fahim Maruf", dept:"Operation", des:"Manager" },
+{ id:"20502", name:"Ahamed Jaman Rumi", dept:"Operation", des:"Dpt. Manager" },
+{ id:"20503", name:"Md. Saiful Islam", dept:"Operation", des:"Asstt. Manager" },
+{ id:"20511", name:"Khondaker Asaduzzaman Biplob", dept:"Operation", des:"Asstt. Manager" },
+{ id:"20328", name:"Md. Naimul Islam", dept:"Operation", des:"Executive" },
+{ id:"20332", name:"Md. Shahidul Islam Mamun", dept:"Operation", des:"Executive" },
+{ id:"20513", name:"Md. Nazmul Alom", dept:"Operation", des:"Jr.Executive" },
+{ id:"20515", name:"Tayabur Rahman Opi", dept:"Operation", des:"Jr.Executive" },
+
+/* ===============================
+   MAINTENANCE
+================================ */
+{ id:"20801", name:"Subhasis Bakul Chandra Ghosh", dept:"Maintenance", des:"Manager" },
+{ id:"20821", name:"S M Farok Rayhan", dept:"Maintenance", des:"Asstt. Manager" },
+{ id:"20303", name:"Mohd. Shamsul Islam", dept:"Maintenance", des:"Sr.Executive" },
+{ id:"20803", name:"Seddekur Rahman", dept:"Maintenance", des:"Supervisor" },
+{ id:"20805", name:"Md. Farhad Hosain", dept:"Maintenance", des:"Supervisor" },
+{ id:"20807", name:"Suman Chandra Das", dept:"Maintenance", des:"Fitter" },
+{ id:"20809", name:"Md. Rahamat Ali", dept:"Maintenance", des:"Generator Opt" },
+{ id:"20810", name:"Md. Akter Hossain", dept:"Maintenance", des:"Fitter" },
+{ id:"20811", name:"Md. Rakibul Hasan Rana", dept:"Maintenance", des:"Sr.Electrician" },
+{ id:"20812", name:"Rahmotullah", dept:"Maintenance", des:"Generator Opt" },
+{ id:"20814", name:"Abu Jafar Mohammed Shaleh", dept:"Maintenance", des:"Technician" },
+{ id:"20815", name:"Mohammad Yasin Arafat", dept:"Maintenance", des:"Electrician" },
+{ id:"20816", name:"Nazrul Islam", dept:"Maintenance", des:"Sr.Electrician" },
+{ id:"20817", name:"Osman Gani", dept:"Maintenance", des:"Forman" },
+{ id:"20819", name:"Md Masud Khan", dept:"Maintenance", des:"Sr.Fitter" },
+{ id:"20824", name:"Md. Fahim", dept:"Maintenance", des:"Sr.Helper" },
+{ id:"20825", name:"Md. Razu Ahmed", dept:"Maintenance", des:"Fitter" },
+{ id:"20826", name:"Md. Arman", dept:"Maintenance", des:"Leath Operator" },
+
+/* ===============================
+   VAT
+================================ */
+{ id:"20202", name:"K.M. Ashraful Alam", dept:"VAT", des:"Sr.Executive" },
+{ id:"20203", name:"Md. Iqbal Hossain", dept:"VAT", des:"Dpt. Manager" },
+/* ===============================
+   BUN / STD
+================================ */
+{ id:"22101", name:"Md. Rafiq Hosen", dept:"BUN/STD", des:"Operator" },
+{ id:"22103", name:"Md. Mahmudul Hasan", dept:"BUN/STD", des:"Operator" },
+{ id:"22104", name:"Md. Mizanur Rahman", dept:"BUN/STD", des:"Operator" },
+{ id:"22107", name:"Norul Islam", dept:"BUN/STD", des:"Operator" },
+{ id:"22111", name:"MD. BIDDUT MIA", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22119", name:"Md. Mostakim Mia", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22125", name:"Md. Robin", dept:"BUN/STD", des:"Skill Helper" },
+{ id:"22129", name:"Md. Mizan", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22141", name:"Masum (Mosharof Hosan Shohel)", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22147", name:"Md. Rafiqul Islam", dept:"BUN/STD", des:"Sr.Operator" },
+{ id:"22308", name:"Md. Sabuj (Jewel)", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22159", name:"Shafiullah", dept:"BUN/STD", des:"Helper" },
+{ id:"22161", name:"Md. Tariqul Islam", dept:"BUN/STD", des:"Skill Helper" },
+{ id:"21399", name:"Rasel Hossain (Ovi)", dept:"BUN/STD", des:"Helper" },
+{ id:"22165", name:"Md. Kawsar Ahmed", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22168", name:"Arif Miah", dept:"BUN/STD", des:"Helper" },
+{ id:"22169", name:"Md. Saddam Hossen Siyam", dept:"BUN/STD", des:"Sr.Helper" },
+{ id:"22178", name:"Md. Shaporan", dept:"BUN/STD", des:"Helper" },
+{ id:"22186", name:"Md. Josim Uddin", dept:"BUN/STD", des:"Semi Operator" },
+{ id:"21184", name:"Shajal Chandra Shil", dept:"BUN/STD", des:"Helper" },
+{ id:"22194", name:"Tamim Sardar", dept:"BUN/STD", des:"Helper" },
+{ id:"22195", name:"Md. Siyam", dept:"BUN/STD", des:"Helper" },
+{ id:"22197", name:"Md. Rakib Mia", dept:"BUN/STD", des:"Helper" },
+{ id:"22198", name:"Ali", dept:"BUN/STD", des:"Helper" },
+{ id:"22199", name:"Md. Tuofukur Rahman", dept:"BUN/STD", des:"Helper" },
+{ id:"221103", name:"Md. Riaj Uddin", dept:"BUN/STD", des:"Helper" },
+{ id:"221104", name:"Md. Jahidul Islam Jihad", dept:"BUN/STD", des:"Helper" },
+{ id:"221105", name:"Md. Mahfug Islam", dept:"BUN/STD", des:"Helper" },
+{ id:"221106", name:"Tirtha Sarkar", dept:"BUN/STD", des:"Helper" },
+{ id:"221107", name:"Bijoy Majumdar", dept:"BUN/STD", des:"Helper" },
+{ id:"221108", name:"Samim Sordar", dept:"BUN/STD", des:"Helper" },
+{ id:"221109", name:"Md. Midul Rana", dept:"BUN/STD", des:"Helper" },
+{ id:"221110", name:"Md. Shahinur Islam", dept:"BUN/STD", des:"Helper" },
+{ id:"221111", name:"Sohidulla", dept:"BUN/STD", des:"Helper" },
+{ id:"221112", name:"Parbaz Miah", dept:"BUN/STD", des:"Helper" },
+{ id:"221113", name:"Md. Younus", dept:"BUN/STD", des:"Helper" },
+{ id:"221114", name:"Md. Marajul Islam", dept:"BUN/STD", des:"Helper" },
+
+/* ===============================
+   COILING
+================================ */
+{ id:"21328", name:"Sobuj Bissas", dept:"Coiling", des:"Jr.Operator" },
+{ id:"21329", name:"Md. Ashikur Rahman", dept:"Coiling", des:"Jr.Operator" },
+{ id:"21341", name:"Riaz Kondoker", dept:"Coiling", des:"Jr.Operator" },
+{ id:"21382", name:"Abubaker Siddik", dept:"Coiling", des:"Sr.Helper" },
+{ id:"21384", name:"Md. Sohel Rana Joadder", dept:"Coiling", des:"Sr.Helper" },
+{ id:"21392", name:"Md. Amir Hossain", dept:"Coiling", des:"Helper" },
+{ id:"21397", name:"Sajol Molla", dept:"Coiling", des:"Sr.Helper" },
+{ id:"21398", name:"Md. Arman Hosen", dept:"Coiling", des:"Helper" },
+{ id:"213103", name:"Sabbir Hasan", dept:"Coiling", des:"Helper" },
+{ id:"213105", name:"Palash Chandra Barmon", dept:"Coiling", des:"Helper" },
+{ id:"213109", name:"Baccu", dept:"Coiling", des:"Helper" },
+{ id:"213110", name:"Md. Arman", dept:"Coiling", des:"Helper" },
+{ id:"213117", name:"Md. Minal Mia", dept:"Coiling", des:"Helper" },
+{ id:"213118", name:"Mohammad Jubairul Islam", dept:"Coiling", des:"Helper" },
+{ id:"213119", name:"Md. Israful Akand", dept:"Coiling", des:"Helper" },
+{ id:"213123", name:"Ariful Islam", dept:"Coiling", des:"Helper" },
+{ id:"211119", name:"Md. Nurol Islam", dept:"Coiling", des:"Helper" },
+{ id:"213125", name:"Md. Jaber Hossain", dept:"Coiling", des:"Helper" },
+{ id:"213128", name:"Md. Monirul Islam", dept:"Coiling", des:"Helper" },
+{ id:"213129", name:"Nayan Mia", dept:"Coiling", des:"Helper" },
+/* ===============================
+   ENAMEL
+================================ */
+{ id:"21102", name:"Md. Rasel Shakh", dept:"Enamel", des:"Supervisor" },
+{ id:"21103", name:"Md. Rahim", dept:"Enamel", des:"Operator" },
+{ id:"21105", name:"Mohammad Aiub", dept:"Enamel", des:"Operator" },
+{ id:"21106", name:"Simson Baroi", dept:"Enamel", des:"Operator" },
+{ id:"21108", name:"Ikbal Hossain Sarder", dept:"Enamel", des:"Jr.Operator" },
+{ id:"21109", name:"Md. Kashem", dept:"Enamel", des:"Operator" },
+{ id:"21117", name:"Md. Hafizul Rahman", dept:"Enamel", des:"Jr.Operator" },
+{ id:"21119", name:"Rupesh Chakma", dept:"Enamel", des:"Sr.Helper" },
+{ id:"21120", name:"Md. Humayun Kabir", dept:"Enamel", des:"Operator" },
+{ id:"21138", name:"Md. Shahin Hossain", dept:"Enamel", des:"Operator" },
+{ id:"21169", name:"Md. Anisor Rahman (Rejaul Karim)", dept:"Enamel", des:"Sr.Helper" },
+{ id:"21193", name:"Md. Kamrul Ahmed", dept:"Enamel", des:"Helper" },
+{ id:"211105", name:"Uzzol Hosen", dept:"Enamel", des:"Helper" },
+{ id:"211116", name:"Shopno Odhikari", dept:"Enamel", des:"Helper" },
+{ id:"211118", name:"Taposh Chandra Barmon", dept:"Enamel", des:"Helper" },
+{ id:"211120", name:"Al Hasan", dept:"Enamel", des:"Helper" },
+{ id:"211122", name:"Md. Rashadul Islam", dept:"Enamel", des:"Helper" },
+{ id:"211126", name:"Md. Nur Nobi Arafat", dept:"Enamel", des:"Helper" },
+{ id:"211127", name:"Uzzal Chandara", dept:"Enamel", des:"Helper" },
+{ id:"211128", name:"Md. Towhidul Islam Tarek", dept:"Enamel", des:"Helper" },
+{ id:"211130", name:"Md. Shahidul Islam", dept:"Enamel", des:"Helper" },
+
+/* ===============================
+   EXTRUSION
+================================ */
+{ id:"22207", name:"Sabuj Sarder", dept:"Extrusion", des:"Jr.Operator" },
+{ id:"22208", name:"Md. Asifur Rahman", dept:"Extrusion", des:"Helper" },
+
+/* ===============================
+   INSULATION
+================================ */
+{ id:"21202", name:"Salamot Ullah", dept:"Insulation", des:"Jr.Operator" },
+{ id:"21205", name:"Md. Forkan", dept:"Insulation", des:"Operator" },
+{ id:"21210", name:"Md. Ashraful Alam", dept:"Insulation", des:"Jr.Operator" },
+{ id:"21218", name:"Md. Faridul Islam", dept:"Insulation", des:"Jr.Operator" },
+{ id:"21219", name:"Salman", dept:"Insulation", des:"Operator" },
+{ id:"21232", name:"Eleas Talukdar", dept:"Insulation", des:"Skill Helper" },
+{ id:"21236", name:"Md. Shakhaoat Hossain Soman (Nazmul Huda)", dept:"Insulation", des:"Sr.Helper" },
+{ id:"21358", name:"Md. Sujon Mia (Alamgir)", dept:"Insulation", des:"Skill Helper" },
+{ id:"21363", name:"Md. Sabbir Mia", dept:"Insulation", des:"Skill Helper" },
+{ id:"21621", name:"Md. Rofikul Islam", dept:"Insulation", des:"Sr.Operator" },
+{ id:"21629", name:"Md. Sobahan Miah", dept:"Insulation", des:"Skill Helper" },
+{ id:"21637", name:"Md. Raju Hossen", dept:"Insulation", des:"Sr.Helper" },
+{ id:"21263", name:"Md. Sujon", dept:"Insulation", des:"Helper" },
+{ id:"21264", name:"Md. Nobin Sarker", dept:"Insulation", des:"Helper" },
+{ id:"21269", name:"Shimon Baroi", dept:"Insulation", des:"Helper" },
+{ id:"21270", name:"Jahid Hossain", dept:"Insulation", des:"Helper" },
+{ id:"21271", name:"Sohel Nakib", dept:"Insulation", des:"Helper" },
+{ id:"21273", name:"Md. Sohag Mia", dept:"Insulation", des:"Helper" },
+{ id:"21274", name:"Md. Hafizul Islam Sabbir", dept:"Insulation", des:"Helper" },
+/* ===============================
+   LOGISTIC
+================================ */
+{ id:"20401", name:"K.M. Abdullah-Al-Mehbub", dept:"Logistic", des:"Sr.Executive" },
+{ id:"20402", name:"Abdus Salam", dept:"Logistic", des:"Dpt. Manager" },
+{ id:"20403", name:"Md. Mahamud Hassan", dept:"Logistic", des:"Operator" },
+{ id:"20407", name:"Md. Abdullah All Mamun Sarkar", dept:"Logistic", des:"Jr.Operator" },
+{ id:"20411", name:"Md. Sohel Mallik", dept:"Logistic", des:"Operator" },
+{ id:"20414", name:"Md. Nasir Uddin", dept:"Logistic", des:"Operator" },
+{ id:"20415", name:"Md. Mahfuz", dept:"Logistic", des:"Operator" },
+{ id:"20419", name:"MD. IMRAN KHAN", dept:"Logistic", des:"Sr.Executive" },
+{ id:"20437", name:"Md. Lablu Hosain", dept:"Logistic", des:"Sr.Helper" },
+{ id:"20438", name:"Md. Golam Mustofa", dept:"Logistic", des:"Supervisor" },
+{ id:"20441", name:"Tarikul Mredha", dept:"Logistic", des:"Sr.Helper" },
+{ id:"20444", name:"Md. Farzanul Islam", dept:"Logistic", des:"Jr.Operator" },
+{ id:"20446", name:"Md. Akibul Islam", dept:"Logistic", des:"Helper" },
+{ id:"20447", name:"Sojib Sheikh (Tipu Sultan)", dept:"Logistic", des:"Helper" },
+{ id:"20449", name:"Md. Faruk (Tarek Majhi)", dept:"Logistic", des:"Helper" },
+{ id:"20451", name:"Md. Rana", dept:"Logistic", des:"Helper" },
+{ id:"20457", name:"Hashina Akther", dept:"Logistic", des:"Helper" },
+{ id:"20463", name:"Md. Al-Amin Islam", dept:"Logistic", des:"Jr.Executive" },
+{ id:"20468", name:"Md. Aynul Mia", dept:"Logistic", des:"Helper" },
+{ id:"20470", name:"Md. Sohrab Hossain Mollah", dept:"Logistic", des:"Executive" },
+{ id:"20476", name:"Md. Mominul Islam", dept:"Logistic", des:"Sr.Helper" },
+{ id:"20479", name:"Md. Ashik Mia", dept:"Logistic", des:"Helper" },
+{ id:"20481", name:"Sumon Ali", dept:"Logistic", des:"Jr.Executive" },
+{ id:"20484", name:"Md. Ariful Islam", dept:"Logistic", des:"Helper" },
+{ id:"20485", name:"Md. Bipul Mia", dept:"Logistic", des:"Helper" },
+{ id:"20486", name:"Sree Prdip Kumar Hiday", dept:"Logistic", des:"Helper" },
+{ id:"20488", name:"Md. Mojahid Ali", dept:"Logistic", des:"Helper" },
+{ id:"20495", name:"Md. Pranto", dept:"Logistic", des:"Helper" },
+{ id:"20497", name:"Md. Emon Hossain", dept:"Logistic", des:"Helper" },
+{ id:"20499", name:"Istiak Hossan", dept:"Logistic", des:"Jr.Executive" },
+{ id:"204101", name:"Md. Tanvir Ahmmed", dept:"Logistic", des:"Helper" },
+{ id:"204102", name:"Sunil Chandro Ray", dept:"Logistic", des:"Helper" },
+{ id:"22311", name:"Sahajalal", dept:"Logistic", des:"Helper" },
+{ id:"204106", name:"Md. Farhad", dept:"Logistic", des:"Helper" },
+{ id:"204110", name:"Billal Hossin Babu", dept:"Logistic", des:"Helper" },
+{ id:"204113", name:"Md. Tanvir Ahmmed Tomal", dept:"Logistic", des:"Helper" },
+{ id:"204115", name:"Al Amin", dept:"Logistic", des:"Helper" },
+{ id:"204117", name:"Md. Omor Faruk", dept:"Logistic", des:"Helper" },
+
+/* ===============================
+   STORE
+================================ */
+{ id:"21501", name:"Md. Maminul Hoque", dept:"Store", des:"Asstt. Manager" },
+{ id:"21503", name:"Mohammad Abdullah Kawsar Hakim", dept:"Store", des:"Sr.Executive" },
+{ id:"20461", name:"Md. Shamim", dept:"Store", des:"Executive" },
+{ id:"21505", name:"Md. Sanaul Haque", dept:"Store", des:"Jr.Executive" },
+{ id:"21506", name:"Md. Mustak Ahmmed", dept:"Store", des:"Jr.Executive" },
+
+/* ===============================
+   GENERAL
+================================ */
+{ id:"22001", name:"Bejendra Nath Roy", dept:"General", des:"Cook" },
+{ id:"22021", name:"Rahima", dept:"General", des:"Cleaner" },
+{ id:"22022", name:"Year Mohammod Faruk", dept:"General", des:"Sr. Office Boy" },
+{ id:"22030", name:"Mst. Saleha Aktar", dept:"General", des:"Cleaner" },
+{ id:"22054", name:"Mst. Selina Begum", dept:"General", des:"Cleaner" },
+{ id:"22061", name:"Mst. Aklima", dept:"General", des:"Cleaner" },
+{ id:"22063", name:"Nasima Begum 2", dept:"General", des:"Cleaner" },
+{ id:"22076", name:"Bisho Doom", dept:"General", des:"Sweeper" },
+{ id:"22086", name:"Mst. Sheuli Begum", dept:"General", des:"Cleaner" },
+{ id:"22096", name:"Pancha Rani Pal", dept:"General", des:"Cleaner" },
+{ id:"20469", name:"Md. Mehedi Hasan", dept:"General", des:"Carpainter" },
+{ id:"20487", name:"Allil Ahmed", dept:"General", des:"Helper" },
+{ id:"220109", name:"Josna Rani", dept:"General", des:"Sweeper" },
+{ id:"220112", name:"Sarifa Begum", dept:"General", des:"Cleaner" },
+{ id:"220113", name:"Rony Lal", dept:"General", des:"Sweeper" },
+{ id:"220122", name:"Mst. Rahima", dept:"General", des:"Cleaner" },
+{ id:"220123", name:"Beauty Akter", dept:"General", des:"Cleaner" },
+{ id:"220124", name:"Tuhin", dept:"General", des:"Helper" },
+{ id:"220131", name:"Mynur Begom", dept:"General", des:"Cleaner" },
+{ id:"220134", name:"Kabir Hossen", dept:"General", des:"Office Boy" },
+{ id:"220140", name:"Shahid Ulla", dept:"General", des:"Cook" },
+{ id:"220146", name:"Md. Sohel Hosen", dept:"General", des:"Office Boy" },
+{ id:"220148", name:"Md. Sumon Mia", dept:"General", des:"Helper" },
+/* ===============================
+   PVC
+================================ */
+{ id:"22301", name:"Debo Brata Acherjya", dept:"PVC", des:"Operator" },
+{ id:"22307", name:"Md. Golzar Hossan", dept:"PVC", des:"Helper" },
+{ id:"22309", name:"Aminul Islam", dept:"PVC", des:"Helper" },
+{ id:"22313", name:"Ahadur Rahman", dept:"PVC", des:"Helper" },
+
+/* ===============================
+   PVC CUTTING
+================================ */
+{ id:"22024", name:"Parul Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"22033", name:"Sreey Gita Rani Somdar", dept:"PVC Cutting", des:"Helper" },
+{ id:"22034", name:"Fatema Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"22035", name:"Shmuli Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"22036", name:"Mst. Bebi Khatun", dept:"PVC Cutting", des:"Helper" },
+{ id:"22060", name:"Lyli Begum", dept:"PVC Cutting", des:"Cleaner" },
+{ id:"22064", name:"Sreemoti Chapola Rani", dept:"PVC Cutting", des:"Helper" },
+{ id:"22090", name:"Shilpi Akter", dept:"PVC Cutting", des:"Helper" },
+{ id:"22091", name:"Mst. Monzoara", dept:"PVC Cutting", des:"Helper" },
+{ id:"22055", name:"Mst Ruzina Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"220111", name:"Argina Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"220118", name:"Mst. Laky Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"220126", name:"Khadiza Begum", dept:"PVC Cutting", des:"Helper" },
+{ id:"220127", name:"Moriomer Nesa", dept:"PVC Cutting", des:"Helper" },
+
+/* ===============================
+   PAPER COVERING
+================================ */
+{ id:"21802", name:"Md. Baccu Miah", dept:"Paper Covering", des:"Sr.Operator" },
+{ id:"21804", name:"Md. Aslam Hossain", dept:"Paper Covering", des:"Operator" },
+{ id:"21805", name:"Sibbur", dept:"Paper Covering", des:"Jr.Operator" },
+{ id:"21806", name:"Amir Hossain Chakder", dept:"Paper Covering", des:"Skill Helper" },
+{ id:"21810", name:"Shree Adesh Chandra", dept:"Paper Covering", des:"Skill Helper" },
+{ id:"21814", name:"Md. Najimul Islam", dept:"Paper Covering", des:"Helper" },
+{ id:"21818", name:"Sohel Chakma", dept:"Paper Covering", des:"Helper" },
+
+/* ===============================
+   SHEATHING
+================================ */
+{ id:"21601", name:"Md. Miraz Uddin", dept:"Sheathing", des:"Sr.Operator" },
+{ id:"21604", name:"Mohammad Enamul Hoque", dept:"Sheathing", des:"Sr.Operator" },
+{ id:"21613", name:"Md. Polash Mia (Farhad)", dept:"Sheathing", des:"Jr.Operator" },
+{ id:"21617", name:"Md. Anisur Haque", dept:"Sheathing", des:"Sr.Helper" },
+{ id:"21622", name:"Halim", dept:"Sheathing", des:"Sr.Operator" },
+{ id:"21623", name:"Md. Shahajahan", dept:"Sheathing", des:"Sr.Helper" },
+{ id:"21626", name:"Sumon Islam", dept:"Sheathing", des:"Jr.Operator" },
+{ id:"22306", name:"Md. Rakibul Hossen Repon", dept:"Sheathing", des:"Sr.Helper" },
+{ id:"21641", name:"Md. Shimul Mia", dept:"Sheathing", des:"Helper" },
+{ id:"21643", name:"Md. Kawsar Hossain", dept:"Sheathing", des:"Helper" },
+{ id:"21644", name:"Md. Jonayet Mia", dept:"Sheathing", des:"Helper" },
+{ id:"21655", name:"Sharuf Mirdha", dept:"Sheathing", des:"Helper" },
+{ id:"21658", name:"Md. Shafiqul Alam Himel", dept:"Sheathing", des:"Helper" },
+{ id:"21660", name:"SK Md. Salman Arefeen", dept:"Sheathing", des:"Helper" },
+{ id:"21662", name:"Anonto Dash", dept:"Sheathing", des:"Helper" },
+{ id:"21665", name:"Sifat Ahmed", dept:"Sheathing", des:"Helper" },
+{ id:"21666", name:"Md. Shaon Islam", dept:"Sheathing", des:"Helper" },
+{ id:"21667", name:"Ajmir Hasan", dept:"Sheathing", des:"Helper" },
+{ id:"21668", name:"Abu Hena Md. Nayem", dept:"Sheathing", des:"Helper" },
+{ id:"21670", name:"Subroto Roy Choyon", dept:"Sheathing", des:"Helper" },
+{ id:"21671", name:"Md. Anamul Hossain", dept:"Sheathing", des:"Helper" },
+{ id:"21672", name:"Nayon Molla", dept:"Sheathing", des:"Helper" },
+/* ===============================
+   TRANSPORT
+================================ */
+{ id:"22020", name:"Md. Babul Bepari -2", dept:"Transport", des:"Driver" },
+{ id:"22041", name:"Md. Ariful", dept:"Transport", des:"Driver" },
+{ id:"22056", name:"Md. Jamir Hosen", dept:"Transport", des:"Helper" },
+{ id:"22058", name:"Md. Shahin Sarkar-2", dept:"Transport", des:"Driver" },
+{ id:"22070", name:"Md. Bappi", dept:"Transport", des:"Driver" },
+{ id:"22071", name:"Md. Farid Mia", dept:"Transport", des:"Driver" },
+{ id:"22074", name:"Md. Zahirul Islam", dept:"Transport", des:"Helper" },
+{ id:"21631", name:"Md. Nazmul Hossain", dept:"Transport", des:"Driver" },
+{ id:"22078", name:"Md. Foysal", dept:"Transport", des:"Driver" },
+{ id:"22079", name:"Md. Iqbal Hosen", dept:"Transport", des:"Driver" },
+{ id:"22080", name:"Rajib Sheikh", dept:"Transport", des:"Driver" },
+{ id:"22081", name:"Md. Jasim Uddin", dept:"Transport", des:"Helper" },
+{ id:"20822", name:"Sree Jony Chandra Paul", dept:"Transport", des:"Motor Machanic" },
+{ id:"20431", name:"Md. Jashim", dept:"Transport", des:"Forklift Driver" },
+{ id:"20439", name:"Md. Juwel Rana", dept:"Transport", des:"Forklift Driver" },
+{ id:"220110", name:"Abu Hanif", dept:"Transport", des:"Helper" },
+{ id:"220116", name:"Prince Mahmud", dept:"Transport", des:"Driver" },
+{ id:"220120", name:"Md. Rahat Hossain", dept:"Transport", des:"Helper" },
+{ id:"220129", name:"Md. Foridul Islam", dept:"Transport", des:"Helper" },
+{ id:"220130", name:"Riyad Shekh", dept:"Transport", des:"Helper" },
+{ id:"220138", name:"Md. Ariful Islam Sumon", dept:"Transport", des:"Driver" },
+{ id:"220142", name:"Md. Al-Amin", dept:"Transport", des:"Forklift Driver" },
+{ id:"220143", name:"Md. Arshad Matubbar", dept:"Transport", des:"Helper" },
+{ id:"220144", name:"Md. Safiqul Islam", dept:"Transport", des:"Driver" },
+{ id:"220145", name:"Md. Firoz Mia", dept:"Transport", des:"Driver" },
+{ id:"220147", name:"Md. Shamim", dept:"Transport", des:"Driver" },
+{ id:"220149", name:"Mohammad Jihad Hasan", dept:"Transport", des:"Helper" },
+{ id:"220150", name:"Raju Ahammed", dept:"Transport", des:"Helper" },
+{ id:"220151", name:"Md. Josim Shadir", dept:"Transport", des:"Driver" },
+{ id:"220152", name:"Md. Mostofa", dept:"Transport", des:"Helper" },
+{ id:"220153", name:"Azharul Islam", dept:"Transport", des:"Driver" },
+{ id:"220154", name:"Md. Mahabub", dept:"Transport", des:"Helper" },
+
+/* ===============================
+   UPCAST
+================================ */
+{ id:"21714", name:"Md. Sakibul", dept:"Upcast", des:"Sr.Helper" },
+{ id:"21718", name:"Md. Dablu", dept:"Upcast", des:"Skill Helper" },
+{ id:"21719", name:"Al Amin", dept:"Upcast", des:"Sr.Helper" },
+{ id:"21722", name:"Md. Tajul Islam", dept:"Upcast", des:"Jr.Operator" },
+{ id:"21725", name:"Md. Younus Mia", dept:"Upcast", des:"Sr.Helper" },
+{ id:"21726", name:"Md. Alamgir Hossen", dept:"Upcast", des:"Helper" },
+{ id:"21728", name:"Abdur Rahim", dept:"Upcast", des:"Sr.Helper" },
+{ id:"21731", name:"Sree Porimol Chandra Barmon", dept:"Upcast", des:"Helper" },
+{ id:"21736", name:"Md. Motiyar Rahman", dept:"Upcast", des:"Helper" },
+{ id:"21737", name:"Shree Folbabu Kumar", dept:"Upcast", des:"Jr.Operator" },
+{ id:"21743", name:"Alamgir Hossain", dept:"Upcast", des:"Helper" },
+{ id:"22302", name:"Md. Mobarak Hossen", dept:"Upcast", des:"Helper" },
+{ id:"21745", name:"Sree Ronjet Paul", dept:"Upcast", des:"Helper" },
+{ id:"21746", name:"Loknath Biswas", dept:"Upcast", des:"Helper" },
+{ id:"21747", name:"Md. Saju", dept:"Upcast", des:"Helper" },
+{ id:"21757", name:"Manik Paul", dept:"Upcast", des:"Helper" },
+{ id:"21759", name:"Md. Raton Mia", dept:"Upcast", des:"Helper" },
+{ id:"21735", name:"Md. Ibrahim Hossain", dept:"Upcast", des:"Jr.Operator" },
+{ id:"21760", name:"Md. Akash", dept:"Upcast", des:"Helper" },
+{ id:"21763", name:"Gouranga Mondol", dept:"Upcast", des:"Helper" },
+{ id:"21764", name:"Md. Moktar Hosen", dept:"Upcast", des:"Helper" },
+{ id:"21767", name:"Md. Rubel Munshi", dept:"Upcast", des:"Semi Operator" },
+{ id:"21769", name:"Md. Gazi Kabirul Kabir", dept:"Upcast", des:"Jr.Operator" },
+{ id:"21198", name:"Md. Imon Mia", dept:"Upcast", des:"Helper" },
+{ id:"21770", name:"Md. Rayhan Mia", dept:"Upcast", des:"Helper" },
+/* ===============================
+   TECHL-CELL
+================================ */
+{ id:"20304", name:"Md. Tuhin Miah", dept:"Techl-Cell", des:"Sr.Executive" },
+{ id:"20305", name:"Rakib Hasan", dept:"Techl-Cell", des:"Sr.Executive" },
+{ id:"20306", name:"Md. Morshed Nasir", dept:"Techl-Cell", des:"Sr.Executive" },
+{ id:"20310", name:"Rubel Chakma", dept:"Techl-Cell", des:"Executive" },
+{ id:"20311", name:"Robi Jyoti Chakma", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
+{ id:"20313", name:"Md. Ariful Islam", dept:"Techl-Cell", des:"Asstt. Manager" },
+{ id:"20316", name:"Md. Noyan Shekh", dept:"Techl-Cell", des:"Executive" },
+{ id:"20325", name:"Md. Shoruar Jahan", dept:"Techl-Cell", des:"Executive" },
+{ id:"20326", name:"Md. Helal Uddin", dept:"Techl-Cell", des:"Sr.Lab.Asst." },
+{ id:"20331", name:"Hridoy Sardar", dept:"Techl-Cell", des:"Executive" },
+{ id:"20338", name:"Mehedi Hassan (Shanto)", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20339", name:"Md. Mottakin Billah", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20340", name:"Md. Ashraful Islam", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20346", name:"Md. Saidur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20348", name:"Md. Maksodur Rahman", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20356", name:"Md. Bappy Howlader", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20494", name:"Md. Al Amin Hossain", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20360", name:"Kamrojaman Ovi", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20362", name:"Palash", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20363", name:"Md. Naeem", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20364", name:"Md. Jihad Khandokar", dept:"Techl-Cell", des:"Lab.Assistant" },
+{ id:"20365", name:"Kawsar Ahmed", dept:"Techl-Cell", des:"Lab.Assistant" },
+
+/* ===============================
+   WIRE DRAWING
+================================ */
+{ id:"21401", name:"Md. Washim Uddin", dept:"Wire Drawing", des:"Sr.Operator" },
+{ id:"21402", name:"Krishna Biswas (Trinath)", dept:"Wire Drawing", des:"Sr.Operator" },
+{ id:"21403", name:"Md. Sumon", dept:"Wire Drawing", des:"Sr.Operator" },
+{ id:"21404", name:"Md. Nur Alom", dept:"Wire Drawing", des:"Operator" },
+{ id:"21405", name:"Md. Abdur Razzak Mia", dept:"Wire Drawing", des:"Operator" },
+{ id:"21412", name:"Md. Uzzal Mia", dept:"Wire Drawing", des:"Jr.Operator" },
+{ id:"21414", name:"Md. Jamal Uddin", dept:"Wire Drawing", des:"Skill Helper" },
+{ id:"21416", name:"Md. Sirazul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
+{ id:"21417", name:"Md. Asadul Hoque", dept:"Wire Drawing", des:"Skill Helper" },
+{ id:"21419", name:"Md. Mominul Islam", dept:"Wire Drawing", des:"Jr.Operator" },
+{ id:"21420", name:"Md. Rayhan", dept:"Wire Drawing", des:"Jr.Operator" },
+{ id:"22151", name:"Md. Apel Mia (Latif Sarker)", dept:"Wire Drawing", des:"Skill Helper" },
+{ id:"21433", name:"Md. Naim Molla", dept:"Wire Drawing", des:"Sr.Helper" },
+{ id:"21436", name:"Md. Sayful Islam", dept:"Wire Drawing", des:"Sr.Helper" },
+{ id:"21457", name:"Md. Monjur Talukder", dept:"Wire Drawing", des:"Helper" },
+{ id:"21460", name:"Gowtom Chandra Bormon", dept:"Wire Drawing", des:"Helper" },
+{ id:"21467", name:"Md. Sohel", dept:"Wire Drawing", des:"Helper" },
+{ id:"21468", name:"Md. Sagor Badsha", dept:"Wire Drawing", des:"Helper" },
+{ id:"211106", name:"Munsi Golam Mortuja", dept:"Wire Drawing", des:"Helper" },
+{ id:"21474", name:"Md. Sakib", dept:"Wire Drawing", des:"Helper" },
+{ id:"21477", name:"Md. Ashraful", dept:"Wire Drawing", des:"Helper" },
+{ id:"21478", name:"Md. Abdul Majed", dept:"Wire Drawing", des:"Helper" },
+{ id:"21480", name:"Md. Akash Hossain Srabon", dept:"Wire Drawing", des:"Helper" },
+{ id:"21481", name:"Md. Mantajul Islam", dept:"Wire Drawing", des:"Helper" },
+{ id:"21482", name:"Md. Robiul Islam", dept:"Wire Drawing", des:"Helper" },
+{ id:"21483", name:"Forhat Hossain", dept:"Wire Drawing", des:"Helper" }
+  
 ];
 
 // ===== DATA =====
@@ -230,3 +666,4 @@ refresh();
 
 </body>
 </html>
+
