@@ -14,61 +14,41 @@ body{margin:0;background:#f4f6fa}
 
 /* Sidebar */
 .sidebar{
-  width:230px; background:#1e3c8a; color:#fff;
-  position:fixed; top:0; left:0; bottom:0; padding:20px;
+  width:220px;background:#1e3c8a;color:#fff;
+  position:fixed;top:0;left:0;bottom:0;padding:20px
 }
-.sidebar h2{margin:0 0 20px;font-size:20px}
+.sidebar h2{margin:0 0 20px}
 .sidebar button{
-  width:100%; padding:12px; margin-bottom:10px;
-  border:none;border-radius:8px;
-  background:#2e5ae8;color:#fff;font-size:14px;
+  width:100%;padding:12px;margin-bottom:10px;
+  border:none;border-radius:8px;background:#2e5ae8;color:#fff
 }
 .sidebar button.active{background:#0d2ea6}
 
 /* Main */
-.main{margin-left:230px;padding:20px}
-
-/* Header */
+.main{margin-left:220px;padding:20px}
 .header{
   background:#fff;padding:20px;border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
+  box-shadow:0 4px 12px rgba(0,0,0,.08)
 }
 .header h1{text-align:center;color:#c0392b;margin:0}
-.badge{display:inline-block;margin-top:10px;padding:6px 12px;border:1px dashed red;color:red}
 
 /* Cards */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px}
 .card{
   background:#fff;padding:20px;border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  box-shadow:0 4px 10px rgba(0,0,0,.08)
 }
-.card h3{margin:0;font-size:14px;color:#555}
-.card p{font-size:34px;margin:10px 0;color:#1e3c8a}
+.card h3{margin:0;font-size:14px}
+.card p{font-size:30px;margin:10px 0;color:#1e3c8a}
 
-/* Tabs */
-.tabs{margin-top:20px}
-.tabs button{
-  padding:10px 18px;border:none;border-radius:8px;
-  margin-right:10px;background:#e1e6f0
-}
-.tabs button.active{background:#1e3c8a;color:#fff}
-
-/* Form */
-.box{background:#fff;padding:20px;margin-top:15px;border-radius:12px}
-input,select{
-  width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc
-}
-.action-btn{margin-top:10px;padding:10px;border:none;border-radius:8px;background:#1e3c8a;color:#fff}
-
-/* Sports Cards */
-.sports-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
-.sport-box{text-align:center;padding:20px;border-radius:12px;border:1px solid #e0e0e0}
-.circle{width:60px;height:60px;border-radius:50%;border:4px solid #dfe6e9;
-margin:10px auto;display:flex;align-items:center;justify-content:center;font-size:20px}
+/* Box */
+.box{background:#fff;padding:20px;border-radius:12px;margin-top:15px}
+input,select{width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #ccc}
+button.action{margin-top:10px;padding:10px;border:none;border-radius:8px;background:#1e3c8a;color:#fff}
 
 /* Table */
 table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
+th,td{border:1px solid #ddd;padding:6px;font-size:12px;text-align:center}
 
 /* Modal */
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)}
@@ -81,47 +61,59 @@ th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
   <h2>🏃 Picnic Sports</h2>
-  <button class="active" onclick="show('manpower')">1. Manpower List</button>
-  <button onclick="show('sports')">2. Sports Register</button>
+  <button class="active" onclick="showTab('manpower')">Manpower</button>
+  <button onclick="showTab('sports')">Sports Register</button>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
   <div class="header">
     <h1>RR IMPERIAL ELECTRICALS LTD.</h1>
-    <div class="badge">HAPPY PICNIC DAY!</div>
   </div>
 
-  <!-- MANPOWER -->
-  <div id="manpower">
+  <!-- MANPOWER TAB -->
+  <div id="manpowerTab">
+
     <div class="cards">
-      <div class="card"><h3>TOTAL MANPOWER</h3><p id="tm"></p></div>
-      <div class="card"><h3>PARTICIPATE TOTAL</h3><p id="pt"></p></div>
-      <div class="card"><h3>LEFT</h3><p id="lf"></p></div>
+      <div class="card"><h3>Total Manpower</h3><p id="totalMp">0</p></div>
+      <div class="card"><h3>Participate</h3><p id="totalReg">0</p></div>
+      <div class="card"><h3>Left</h3><p id="leftMp">0</p></div>
     </div>
 
-    <div class="tabs">
-      <button class="active">Individual Registration</button>
-      <button>Department Bulk Registration</button>
-    </div>
-
+    <!-- Individual -->
     <div class="box">
-      <input id="eid" placeholder="Enter Employee ID">
-      <button class="action-btn" onclick="searchEmp()">Search</button>
+      <h3>Individual Registration</h3>
+      <input id="searchId" placeholder="Employee ID">
+      <button class="action" onclick="searchEmp()">Search</button>
     </div>
+
+    <!-- Bulk -->
+    <div class="box">
+      <h3>Department Bulk Registration</h3>
+      <select id="deptSelect"></select>
+      <select id="bulkSport">
+        <option value="">Select Sport</option>
+        <option>Tug Of War (দড়ি টানা)</option>
+        <option>Pot Breaking (হাড়ি ভাংগা)</option>
+        <option>Sack Race (বস্তা দৌড়)</option>
+        <option>Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
+        <option>Musical Chair (মিউজিক্যাল চেয়ার)</option>
+      </select>
+      <button class="action" onclick="bulkRegister()">Register Department</button>
+    </div>
+
   </div>
 
-  <!-- SPORTS -->
-  <div id="sports" style="display:none">
+  <!-- SPORTS TAB -->
+  <div id="sportsTab" style="display:none">
     <div class="box">
-      <button class="action-btn" onclick="downloadPDF()">Download PDF</button>
-      <button class="action-btn" style="background:#c0392b" onclick="clearAll()">Bulk Delete</button>
+      <button class="action" onclick="downloadPDF()">Download PDF</button>
     </div>
-
-    <div class="sports-cards" id="sportSummary"></div>
-    <div id="sportTable"></div>
+    <div id="sportsTable"></div>
   </div>
 
 </div>
@@ -130,7 +122,7 @@ th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
 <div class="modal" id="modal">
   <div class="modal-content">
     <div id="empInfo"></div>
-    <select id="sport">
+    <select id="sportSelect">
       <option value="">Select Sport</option>
       <option>Tug Of War (দড়ি টানা)</option>
       <option>Pot Breaking (হাড়ি ভাংগা)</option>
@@ -138,14 +130,17 @@ th,td{border:1px solid #ddd;padding:8px;font-size:12px;text-align:center}
       <option>Basket Toss (ঝুড়িতে বল নিক্ষেপ)</option>
       <option>Musical Chair (মিউজিক্যাল চেয়ার)</option>
     </select>
-    <button class="action-btn" onclick="register()">Done</button>
-    <button class="action-btn" style="background:#7f8c8d" onclick="closeModal()">Cancel</button>
+    <button class="action" onclick="register()">Done</button>
+    <button class="action" style="background:#7f8c8d" onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
 <script>
-// ===== AUTO INJECT MANPOWER (Demo sample, full list can be injected same way) =====
+/* ===============================
+   DEMO MANPOWER (তুমি replace করবে)
+================================ */
 const manpower = [
+  const manpower = [
 /* ===============================
    ADMINISTRATION
 ================================ */
@@ -587,83 +582,108 @@ const manpower = [
   
 ];
 
-// ===== DATA =====
-let reg = JSON.parse(localStorage.getItem("sportsReg")||"[]");
-let selected=null;
 
-// ===== FUNCTIONS =====
-function show(id){
- document.getElementById("manpower").style.display=id=="manpower"?"block":"none";
- document.getElementById("sports").style.display=id=="sports"?"block":"none";
-}
-function refresh(){
- tm.innerText=manpower.length;
- pt.innerText=reg.length;
- lf.innerText=manpower.length-reg.length;
+/* ===============================
+   DATA
+================================ */
+let registrations = JSON.parse(localStorage.getItem("sportsReg") || "[]");
+let selectedEmp = null;
 
- let sports=["Tug Of War (দড়ি টানা)","Pot Breaking (হাড়ি ভাংগা)","Sack Race (বস্তা দৌড়)","Basket Toss (ঝুড়িতে বল নিক্ষেপ)","Musical Chair (মিউজিক্যাল চেয়ার)"];
- sportSummary.innerHTML="";
- sports.forEach(s=>{
-   let c=reg.filter(r=>r.sport==s).length;
-   sportSummary.innerHTML+=`<div class="sport-box"><b>${s}</b><div class="circle">${c}</div></div>`;
- });
-
- let html="<table><tr><th>ID</th><th>Name</th><th>Dept</th><th>Sport</th><th>Action</th></tr>";
- reg.forEach((r,i)=>{
-  html+=`<tr><td>${r.id}</td><td>${r.name}</td><td>${r.dept}</td><td>${r.sport}</td>
-  <td><button onclick="del(${i})">Delete</button></td></tr>`;
- });
- html+="</table>";
- sportTable.innerHTML=html;
+/* ===============================
+   UI LOGIC
+================================ */
+function showTab(tab){
+  manpowerTab.style.display = tab==="manpower"?"block":"none";
+  sportsTab.style.display = tab==="sports"?"block":"none";
 }
 
+/* ===============================
+   SEARCH
+================================ */
 function searchEmp(){
- let id=eid.value;
- selected=manpower.find(e=>e.id==id);
- if(!selected){alert("Not Found");return}
- empInfo.innerHTML=`<b>${selected.name}</b><br>${selected.dept}<br>${selected.des}`;
- modal.style.display="block";
+  const id = searchId.value.trim();
+  selectedEmp = manpower.find(m=>m.id===id);
+  if(!selectedEmp){alert("Employee Not Found");return}
+  empInfo.innerHTML = `
+    <b>${selectedEmp.name}</b><br>
+    ${selectedEmp.dept}<br>
+    ${selectedEmp.desig}
+  `;
+  modal.style.display="block";
 }
 
+/* ===============================
+   REGISTER
+================================ */
 function register(){
- if(reg.find(r=>r.id==selected.id)){alert("Already Registered");return}
- let sp=sport.value;if(!sp){alert("Select sport");return}
- reg.push({...selected,sport:sp});
- localStorage.setItem("sportsReg",JSON.stringify(reg));
- closeModal();refresh();
+  const sport = sportSelect.value;
+  if(!sport){alert("Select Sport");return}
+  if(registrations.find(r=>r.id===selectedEmp.id)){
+    alert("Already Registered");return;
+  }
+  registrations.push({...selectedEmp,sport});
+  save();
+  closeModal();
+}
+
+/* ===============================
+   BULK REGISTER (STRUCTURE READY)
+================================ */
+function bulkRegister(){
+  alert("Bulk registration logic ready – manpower add করলে কাজ করবে");
+}
+
+/* ===============================
+   SAVE & RENDER
+================================ */
+function save(){
+  localStorage.setItem("sportsReg",JSON.stringify(registrations));
+  render();
+}
+
+function render(){
+  totalMp.innerText = manpower.length;
+  totalReg.innerText = registrations.length;
+  leftMp.innerText = manpower.length - registrations.length;
+
+  let html = `<table><tr><th>ID</th><th>Name</th><th>Dept</th><th>Sport</th><th>Action</th></tr>`;
+  registrations.forEach((r,i)=>{
+    html += `<tr>
+      <td>${r.id}</td><td>${r.name}</td><td>${r.dept}</td><td>${r.sport}</td>
+      <td><button onclick="del(${i})">Delete</button></td>
+    </tr>`;
+  });
+  html += `</table>`;
+  sportsTable.innerHTML = html;
+
+  // Department dropdown
+  const depts=[...new Set(manpower.map(m=>m.dept))];
+  deptSelect.innerHTML = `<option value="">Select Department</option>`;
+  depts.forEach(d=>deptSelect.innerHTML+=`<option>${d}</option>`);
 }
 
 function del(i){
- if(confirm("Delete?")){
-  reg.splice(i,1);
-  localStorage.setItem("sportsReg",JSON.stringify(reg));
-  refresh();
- }
-}
-
-function clearAll(){
- if(confirm("Delete All?")){
-  reg=[];
-  localStorage.removeItem("sportsReg");
-  refresh();
- }
+  if(confirm("Delete?")){
+    registrations.splice(i,1);
+    save();
+  }
 }
 
 function closeModal(){modal.style.display="none"}
 
 function downloadPDF(){
- const {jsPDF}=window.jspdf;
- const pdf=new jsPDF();
- let y=10;
- reg.forEach(r=>{
-  pdf.text(`${r.id} ${r.name} - ${r.sport}`,10,y);y+=8;
- });
- pdf.save("Sports_List.pdf");
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF();
+  let y=10;
+  registrations.forEach(r=>{
+    pdf.text(`${r.id} ${r.name} - ${r.sport}`,10,y);
+    y+=8;
+  });
+  pdf.save("Sports_List.pdf");
 }
 
-refresh();
+render();
 </script>
 
 </body>
 </html>
-
